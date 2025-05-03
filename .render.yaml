@@ -1,7 +1,10 @@
 services:
   - type: web
     name: travelhub
-    env: static
-    buildCommand: npm install && npm run build
-    staticPublishPath: build
-    rootDir: client
+    env: node
+    buildCommand: cd client && npm install && chmod +x node_modules/.bin/react-scripts && npm run build
+    startCommand: serve -s build
+    buildFilter:
+      paths:
+        - client/**
+    staticPublishPath: client/build
