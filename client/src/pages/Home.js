@@ -1,25 +1,26 @@
-import React, { useState } from "react";
+import React from "react";
+import "./HomePage.css";
+import SearchTabs from "../components/SearchTabs";
 
-const hotelCities = [
-  "New York", "London", "Paris", "Istanbul", "Dubai", "Doha", "Kuala Lumpur"
-  // Israel excluded
-];
-
-function Hotels() {
-  const [city, setCity] = useState("");
-
+const HomePage = () => {
   return (
-    <div>
-      <h2>Search Hotels</h2>
-      <label>City:</label>
-      <select value={city} onChange={(e) => setCity(e.target.value)}>
-        <option value="">Select City</option>
-        {hotelCities.map(city => <option key={city} value={city}>{city}</option>)}
-      </select>
-
-      <button>Search Hotels</button>
+    <div className="home-page">
+      <div className="hero-banner">
+        <img
+          src="/banner.jpg"
+          alt="Fly high with our deals"
+          className="hero-image"
+        />
+        <div className="hero-text">
+          <h1>Discover the World</h1>
+          <p>Book flights and hotels with unbeatable prices.</p>
+        </div>
+      </div>
+      <div className="search-section">
+        <SearchTabs />
+      </div>
     </div>
   );
-}
+};
 
-export default Hotels;
+export default HomePage;
