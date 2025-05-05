@@ -1,0 +1,31 @@
+.flight-search {
+  max-width: 600px;
+  margin: auto;
+  padding: 30px;
+  background: #f7f7f7;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.search-button {
+  background-color: #0071c2;
+  color: white;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.search-button:hover {
+  background-color: #005fa3;
+}
