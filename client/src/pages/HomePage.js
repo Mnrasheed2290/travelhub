@@ -1,5 +1,5 @@
 import React from "react";
-import "../styles/HomePage.css"; // Make sure this matches the actual path
+import "../styles/HomePage.css";
 import SearchTabs from "../components/SearchTabs";
 
 const HomePage = () => {
@@ -7,7 +7,7 @@ const HomePage = () => {
     <div className="home-page">
       <div className="hero-banner">
         <img
-          src="client/public/banner.png"
+          src="/assets/banner.png"
           alt="Fly high with our deals"
           className="hero-image"
         />
