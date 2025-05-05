@@ -1,0 +1,23 @@
+.banner {
+  position: relative;
+  text-align: center;
+  color: white;
+}
+
+.banner-image {
+  width: 100%;
+  height: auto;
+  max-height: 400px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.banner-text {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -30%);
+  background: rgba(0, 0, 0, 0.5);
+  padding: 25px;
+  border-radius: 10px;
+}
