@@ -6,7 +6,8 @@ const HomePage = () => {
   return (
     <div className="home-page">
       <div className="hero-banner">
-        <img src={`${process.env.PUBLIC_URL}/assets/banner.png`} alt="Fly high with our deals" className="hero-image" />
+       <img src="/banner.png" alt="Fly high with our deals" className="hero-image" />
+
 
         <div className="hero-text">
           <h1>Discover the World</h1>
