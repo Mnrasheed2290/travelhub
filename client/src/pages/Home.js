@@ -1,13 +1,14 @@
 import React from "react";
 import "../styles/HomePage.css";
 import SearchTabs from "../components/SearchTabs";
+import bannerImage from "../assets/banner.png"; // <-- Webpack-safe import
 
 const HomePage = () => {
   return (
     <div className="home-page">
       <div className="hero-banner">
         <img
-          src="/assets/banner.png"
+          src={bannerImage}
           alt="Fly high with our deals"
           className="hero-image"
         />
