@@ -1,12 +1,19 @@
-import React, { useState } from "react";
+// File: client/src/pages/Hotels.js
 
-const hotelCities = [
-  "New York", "London", "Paris", "Istanbul", "Dubai", "Doha", "Kuala Lumpur"
-  // Israel excluded
-];
+import React, { useState, useEffect } from "react";
+import { fetchCitiesExcludingIsrael } from "../utils/amadeusAPI";
 
 function Hotels() {
   const [city, setCity] = useState("");
+  const [hotelCities, setHotelCities] = useState([]);
+
+  useEffect(() => {
+    const loadCities = async () => {
+      const cities = await fetchCitiesExcludingIsrael("a");
+      setHotelCities(cities);
+    };
+    loadCities();
+  }, []);
 
   return (
     <div>
@@ -14,7 +21,9 @@ function Hotels() {
       <label>City:</label>
       <select value={city} onChange={(e) => setCity(e.target.value)}>
         <option value="">Select City</option>
-        {hotelCities.map(city => <option key={city} value={city}>{city}</option>)}
+        {hotelCities.map((c) => (
+          <option key={c.id} value={c.name}>{c.name}</option>
+        ))}
       </select>
 
       <button>Search Hotels</button>
