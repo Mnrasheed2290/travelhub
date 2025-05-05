@@ -1,14 +1,15 @@
 import React from "react";
 import "../styles/HomePage.css";
-import SearchTabs from "../components/SearchTabs";
-import bannerImage from "../assets/banner.png"; // <-- Webpack-safe import
+import FlightSearch from "../components/FlightSearch";
 
 const HomePage = () => {
   return (
     <div className="home-page">
       <div className="hero-banner">
-        <img src="/assets/banner.png" alt="Fly high with our deals" className="hero-image" />
-
+        <img
+          src="/assets/banner.png"
+          alt="Fly high with our deals"
+          className="hero-image"
         />
         <div className="hero-text">
           <h1>Discover the World</h1>
@@ -17,7 +18,7 @@ const HomePage = () => {
       </div>
 
       <div className="search-section">
-        <SearchTabs />
+        <FlightSearch />
       </div>
     </div>
   );
