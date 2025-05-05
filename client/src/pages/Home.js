@@ -13,7 +13,7 @@ const HomePage = () => {
         />
         <div className="hero-text">
           <h1>Discover the World</h1>
-          <p>Book flights and hotels with unbeatable prices.</p>
+          <p>Book flights and hotels with unbeatable prices</p>
         </div>
       </div>
 
