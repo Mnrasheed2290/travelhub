@@ -1,0 +1,31 @@
+.search-tabs-container {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tab-buttons {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.tab-buttons button {
+  padding: 10px 25px;
+  border: none;
+  border-radius: 8px;
+  background-color: #e4e4e4;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.tab-buttons button.active {
+  background-color: #007bff;
+  color: white;
+}
+
+.tab-content {
+  padding-top: 10px;
+}
