@@ -1,5 +1,5 @@
 import React from "react";
-import "./HomePage.css";
+import "../styles/HomePage.css"; // Make sure this matches the actual path
 import SearchTabs from "../components/SearchTabs";
 
 const HomePage = () => {
@@ -16,6 +16,7 @@ const HomePage = () => {
           <p>Book flights and hotels with unbeatable prices.</p>
         </div>
       </div>
+
       <div className="search-section">
         <SearchTabs />
       </div>
