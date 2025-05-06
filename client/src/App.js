@@ -4,7 +4,7 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import './pages/HomePage.css';             // ✅ CSS for HomePage styles
 import HomePage from './pages/HomePage';   // ✅ Actual component
-import FlightSearch from "./components/FlightSearch";
+import FlightSearch from "../components/FlightSearch";
 import FlightBook from "./pages/FlightBook";
 import NavBar from "./components/NavBar"; // Optional
 
