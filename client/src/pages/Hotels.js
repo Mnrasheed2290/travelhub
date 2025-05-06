@@ -1,32 +1,54 @@
 // File: client/src/pages/Hotels.js
 
 import React, { useState, useEffect } from "react";
-import { fetchCitiesExcludingIsrael } from "../utils/amadeusAPI";
+import Select from "react-select";
+import axios from "axios";
+import API_KEYS from "../apiKeys";
+
+const excludedCities = ['Tel Aviv', 'Jerusalem', 'Haifa', 'Eilat', 'Israel'];
 
 function Hotels() {
-  const [city, setCity] = useState("");
+  const [city, setCity] = useState(null);
   const [hotelCities, setHotelCities] = useState([]);
 
   useEffect(() => {
-    const loadCities = async () => {
-      const cities = await fetchCitiesExcludingIsrael("a");
-      setHotelCities(cities);
+    const fetchHotelCities = async () => {
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/hotels/cities`, {
+          headers: {
+            'Authorization': `Bearer ${API_KEYS.hotelSearch.key}`
+          }
+        });
+
+        const filteredCities = response.data.filter(city =>
+          !excludedCities.some(ex => city.name.includes(ex) || city.countryCode === 'IL')
+        );
+
+        const options = filteredCities.map(city => ({ value: city.name, label: city.name }));
+        setHotelCities(options);
+      } catch (err) {
+        console.error(err);
+        alert("Error loading hotel cities.");
+      }
     };
-    loadCities();
+    fetchHotelCities();
   }, []);
 
   return (
-    <div>
+    <div className="hotel-search">
       <h2>Search Hotels</h2>
-      <label>City:</label>
-      <select value={city} onChange={(e) => setCity(e.target.value)}>
-        <option value="">Select City</option>
-        {hotelCities.map((c) => (
-          <option key={c.id} value={c.name}>{c.name}</option>
-        ))}
-      </select>
+      <div className="form-group">
+        <label>City:</label>
+        <Select
+          options={hotelCities}
+          onChange={setCity}
+          value={city}
+          placeholder="Type a city..."
+          isSearchable
+        />
+      </div>
 
-      <button>Search Hotels</button>
+      <button disabled={!city}>Search Hotels</button>
     </div>
   );
 }
