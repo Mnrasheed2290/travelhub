@@ -7,7 +7,7 @@ const HomePage = () => {
     <div className="home-page">
       <div className="hero-banner">
         <img
-          src="/assets/banner.png"
+          src={`${process.env.PUBLIC_URL}/assets/banner.png`}
           alt="Fly high with our deals"
           className="hero-image"
         />
