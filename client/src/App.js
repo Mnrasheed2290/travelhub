@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./pages/HomePage.css";           // ✅ This imports CSS correctly
 import HomePage from "./pages/HomePage"; // ✅ This imports the actual HomePage component
-import FlightSearch from "./pages/FlightSearch";
+import FlightSearch from "./components/FlightSearch";
 import FlightBook from "./pages/FlightBook";
 import NavBar from "./components/NavBar"; // Optional if you have a NavBar component
 
