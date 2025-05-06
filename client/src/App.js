@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import HomePage from "./pages/Home.js";           // ✅ Corrected import
+import HomePage from "./pages/Home";           // ✅ Corrected import
 import FlightSearch from "./components/FlightSearch"; // ✅ Component, not page
 import FlightBook from "./pages/FlightBook";
 import NavBar from "./components/NavBar";          // ✅ Optional
