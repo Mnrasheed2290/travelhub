@@ -1,18 +1,18 @@
+// File: client/src/App.js
+
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import "./pages/HomePage.css";           // ✅ This imports CSS correctly
-import HomePage from "./pages/HomePage"; // ✅ This imports the actual HomePage component
+import './pages/HomePage.css';             // ✅ CSS for HomePage styles
+import HomePage from './pages/HomePage';   // ✅ Actual component
 import FlightSearch from "./components/FlightSearch";
 import FlightBook from "./pages/FlightBook";
-import NavBar from "./components/NavBar"; // Optional if you have a NavBar component
+import NavBar from "./components/NavBar"; // Optional
 
 function App() {
   return (
     <Router>
       <div className="app">
-        {/* Optional NavBar */}
         <NavBar />
-
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/flights" element={<FlightSearch />} />
