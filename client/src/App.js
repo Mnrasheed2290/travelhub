@@ -1,8 +1,8 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage.css";
-import FlightSearch from "./components/FlightSearch";
-import FlightBook from "./components/FlightBook";
+import FlightSearch from "./pages/FlightSearch";
+import FlightBook from "./pages/FlightBook";
 import NavBar from "./components/NavBar"; // Optional if you have a NavBar component
 
 function App() {
