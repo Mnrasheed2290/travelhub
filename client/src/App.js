@@ -1,5 +1,5 @@
 import React from "react";
-import "../styles/HomePage.css";
+import "../pages/HomePage.css";
 import SearchTabs from "../components/SearchTabs";
 
 const HomePage = () => {
