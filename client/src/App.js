@@ -1,30 +1,27 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import NavBar from './components/NavBar';
-import Banner from './components/Banner';
-import FlightSearch from './components/FlightSearch';
-import Flights from './pages/Flights';
-import Hotels from './pages/Hotels';
+import React from "react";
+import "../styles/HomePage.css";
+import SearchTabs from "../components/SearchTabs";
 
-function App() {
+const HomePage = () => {
   return (
-    <Router>
-      <NavBar />
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <>
-              <Banner />
-              <FlightSearch />
-            </>
-          }
+    <div className="home-page">
+      <div className="hero-banner">
+        <img
+          src={`${process.env.PUBLIC_URL}/assets/banner.png`}
+          alt="Fly high with our deals"
+          className="hero-image"
         />
-        <Route path="/flights" element={<Flights />} />
-        <Route path="/hotels" element={<Hotels />} />
-      </Routes>
-    </Router>
-  );
-}
+        <div className="hero-text">
+          <h1>Discover the World</h1>
+          <p>Book flights and hotels with unbeatable prices</p>
+        </div>
+      </div>
 
-export default App;
+      <div className="search-section">
+        <SearchTabs />
+      </div>
+    </div>
+  );
+};
+
+export default HomePage;
