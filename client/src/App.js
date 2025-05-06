@@ -1,15 +1,16 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import HomePage from "./pages/HomePage";           // ✅ Corrected import
-import FlightSearch from "./components/FlightSearch"; // ✅ Component, not page
+import "./pages/HomePage.css";           // ✅ This imports CSS correctly
+import HomePage from "./pages/HomePage"; // ✅ This imports the actual HomePage component
+import FlightSearch from "./pages/FlightSearch";
 import FlightBook from "./pages/FlightBook";
-import NavBar from "./components/NavBar";          // ✅ Optional
+import NavBar from "./components/NavBar"; // Optional if you have a NavBar component
 
 function App() {
   return (
     <Router>
       <div className="app">
-        {/* If you have a NavBar component, keep it here */}
+        {/* Optional NavBar */}
         <NavBar />
 
         <Routes>
