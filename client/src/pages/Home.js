@@ -7,7 +7,7 @@ const HomePage = () => {
     <div className="home-page">
       <div className="hero-banner">
         <img
-          src="/banner.png"
+          src="/assets/banner.png"
           alt="Fly high with our deals"
           className="hero-image"
         />
