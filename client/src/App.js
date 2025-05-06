@@ -1,27 +1,25 @@
 import React from "react";
-import "./pages/HomePage.css";
-import SearchTabs from "./components/SearchTabs";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import HomePage from "./pages/HomePage";
+import FlightSearch from "./components/FlightSearch";
+import FlightBook from "./components/FlightBook";
+import NavBar from "./components/NavBar"; // Optional if you have a NavBar component
 
-const HomePage = () => {
+function App() {
   return (
-    <div className="home-page">
-      <div className="hero-banner">
-        <img
-          src={`${process.env.PUBLIC_URL}/assets/banner.png`}
-          alt="Fly high with our deals"
-          className="hero-image"
-        />
-        <div className="hero-text">
-          <h1>Discover the World</h1>
-          <p>Book flights and hotels with unbeatable prices</p>
-        </div>
-      </div>
+    <Router>
+      <div className="app">
+        {/* Optional NavBar */}
+        <NavBar />
 
-      <div className="search-section">
-        <SearchTabs />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/flights" element={<FlightSearch />} />
+          <Route path="/book-flight" element={<FlightBook />} />
+        </Routes>
       </div>
-    </div>
+    </Router>
   );
-};
+}
 
-export default HomePage;
+export default App;
