@@ -14,6 +14,11 @@ function FlightBook() {
   }, []);
 
   const bookFlight = async () => {
+    if (!firstName || !lastName) {
+      alert('Please enter both first and last names.');
+      return;
+    }
+
     try {
       const traveler = {
         id: '1',
@@ -47,22 +52,30 @@ function FlightBook() {
       });
 
       alert('Booking successful!');
-      console.log(response.data);
+      console.log('Booking response:', response.data);
     } catch (error) {
-      console.error(error);
-      alert('Error booking flight');
+      console.error('Error booking flight:', error.response?.data || error.message);
+      alert('Error booking flight. Please try again later.');
     }
   };
 
   if (!flightOffer) {
-    return <p>No flight selected.</p>;
+    return <p>No flight selected. Please go back and choose a flight.</p>;
   }
 
   return (
     <div>
       <h2>Book Flight</h2>
-      <input placeholder="First Name" value={firstName} onChange={e => setFirstName(e.target.value)} />
-      <input placeholder="Last Name" value={lastName} onChange={e => setLastName(e.target.value)} />
+      <input
+        placeholder="First Name"
+        value={firstName}
+        onChange={(e) => setFirstName(e.target.value)}
+      />
+      <input
+        placeholder="Last Name"
+        value={lastName}
+        onChange={(e) => setLastName(e.target.value)}
+      />
       <button onClick={bookFlight}>Confirm Booking</button>
     </div>
   );
