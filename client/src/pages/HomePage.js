@@ -1,5 +1,7 @@
+// File: client/src/pages/HomePage.js
+
 import React from "react";
-import "../pages/HomePage.css";  // Correct path to CSS
+import "../pages/HomePage.css";
 
 const HomePage = () => {
   return (
@@ -15,7 +17,6 @@ const HomePage = () => {
           <p>Book flights and hotels with unbeatable prices</p>
         </div>
       </div>
-
       <div className="search-section">
         <h2>Plan Your Journey</h2>
       </div>
