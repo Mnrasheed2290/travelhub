@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'; 
 import Select from 'react-select';
 import DatePicker from 'react-datepicker';
 import axios from 'axios';
@@ -12,7 +12,7 @@ const allCities = [
   'New York', 'London', 'Paris', 'Cairo', 'Tokyo', 'Istanbul', 'Dubai',
   'Doha', 'Lahore', 'Toronto', 'Los Angeles', 'Chicago', 'Madrid',
   'Rome', 'Bangkok', 'Kuala Lumpur', 'Jakarta', 'Amman', 'Johannesburg', 'Nairobi'
-]; // ✅ Israel already excluded
+]; 
 
 const cityOptions = allCities.map(city => ({ value: city, label: city }));
 
@@ -58,43 +58,40 @@ function FlightSearch() {
   return (
     <div className="flight-search">
       <h2>Find Your Flight</h2>
-
       <div className="form-group">
         <label>From</label>
         <Select
           options={cityOptions}
-          onChange={setOrigin}
+          onChange={(selected) => {
+            console.log('Origin selected:', selected);
+            setOrigin(selected);
+          }}
           value={origin}
           placeholder="Type a city..."
           isSearchable
-          className="react-select-container"
-          classNamePrefix="react-select"
         />
       </div>
-
       <div className="form-group">
         <label>To</label>
         <Select
           options={cityOptions}
-          onChange={setDestination}
+          onChange={(selected) => {
+            console.log('Destination selected:', selected);
+            setDestination(selected);
+          }}
           value={destination}
           placeholder="Type a city..."
           isSearchable
-          className="react-select-container"
-          classNamePrefix="react-select"
         />
       </div>
-
       <div className="form-group">
         <label>Travel Date</label>
         <DatePicker
           selected={departureDate}
           onChange={date => setDepartureDate(date)}
           placeholderText="Select date"
-          className="date-picker"
         />
       </div>
-
       <div className="form-group">
         <label>Adults</label>
         <input
@@ -104,14 +101,11 @@ function FlightSearch() {
           min="1"
         />
       </div>
-
-      <button className="search-button" onClick={searchFlights}>Search</button>
-
-      <ul className="flight-list">
-        {flights.length === 0 && <li>No results or all results excluded.</li>}
+      <button onClick={searchFlights}>Search</button>
+      <ul>
         {flights.map((flight, index) => (
-          <li key={index} className="flight-item">
-            <p>Flight ID: {flight.id}</p>
+          <li key={index}>
+            Flight ID: {flight.id}
             <button
               onClick={() => {
                 localStorage.setItem('selectedFlight', JSON.stringify(flight));
