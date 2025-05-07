@@ -1,4 +1,6 @@
-import React, { useState } from 'react'; 
+// File: client/src/pages/FlightSearch.js
+
+import React, { useState } from 'react';
 import Select from 'react-select';
 import DatePicker from 'react-datepicker';
 import axios from 'axios';
@@ -12,7 +14,7 @@ const allCities = [
   'New York', 'London', 'Paris', 'Cairo', 'Tokyo', 'Istanbul', 'Dubai',
   'Doha', 'Lahore', 'Toronto', 'Los Angeles', 'Chicago', 'Madrid',
   'Rome', 'Bangkok', 'Kuala Lumpur', 'Jakarta', 'Amman', 'Johannesburg', 'Nairobi'
-]; // ✅ Israel already excluded
+];
 
 const cityOptions = allCities.map(city => ({ value: city, label: city }));
 
@@ -42,13 +44,7 @@ function FlightSearch() {
         }
       });
 
-      const filteredFlights = response.data.filter(flight => {
-        const depCity = flight.itineraries?.[0]?.segments?.[0]?.departure?.iataCode || '';
-        const arrCity = flight.itineraries?.[0]?.segments?.[0]?.arrival?.iataCode || '';
-        return !excludedCities.some(ex => depCity.includes(ex) || arrCity.includes(ex));
-      });
-
-      setFlights(filteredFlights);
+      setFlights(response.data);
     } catch (error) {
       console.error(error);
       alert('Error fetching flight offers');
@@ -58,7 +54,6 @@ function FlightSearch() {
   return (
     <div className="flight-search">
       <h2>Find Your Flight</h2>
-
       <div className="form-group">
         <label>From</label>
         <Select
@@ -69,7 +64,6 @@ function FlightSearch() {
           isSearchable
         />
       </div>
-
       <div className="form-group">
         <label>To</label>
         <Select
@@ -80,7 +74,6 @@ function FlightSearch() {
           isSearchable
         />
       </div>
-
       <div className="form-group">
         <label>Travel Date</label>
         <DatePicker
@@ -89,7 +82,6 @@ function FlightSearch() {
           placeholderText="Select date"
         />
       </div>
-
       <div className="form-group">
         <label>Adults</label>
         <input
@@ -99,11 +91,8 @@ function FlightSearch() {
           min="1"
         />
       </div>
-
       <button onClick={searchFlights}>Search</button>
-
       <ul>
-        {flights.length === 0 && <li>No results or all results excluded.</li>}
         {flights.map((flight, index) => (
           <li key={index}>
             <p>Flight ID: {flight.id}</p>
