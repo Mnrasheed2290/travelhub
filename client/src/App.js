@@ -3,7 +3,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./HomePage.css"; // ✅ FIXED: Relative to src/
-import HomePage from "./pages/HomePage";
+import HomePage from "./pages/HomePage.css";
 import FlightSearch from "./components/FlightSearch";
 import FlightBook from "./pages/FlightBook";
 import NavBar from "./components/NavBar";
