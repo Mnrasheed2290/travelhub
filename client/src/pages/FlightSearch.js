@@ -12,7 +12,7 @@ const allCities = [
   'New York', 'London', 'Paris', 'Cairo', 'Tokyo', 'Istanbul', 'Dubai',
   'Doha', 'Lahore', 'Toronto', 'Los Angeles', 'Chicago', 'Madrid',
   'Rome', 'Bangkok', 'Kuala Lumpur', 'Jakarta', 'Amman', 'Johannesburg', 'Nairobi'
-]; 
+]; // ✅ Israel already excluded
 
 const cityOptions = allCities.map(city => ({ value: city, label: city }));
 
@@ -58,32 +58,29 @@ function FlightSearch() {
   return (
     <div className="flight-search">
       <h2>Find Your Flight</h2>
+
       <div className="form-group">
         <label>From</label>
         <Select
           options={cityOptions}
-          onChange={(selected) => {
-            console.log('Origin selected:', selected);
-            setOrigin(selected);
-          }}
+          onChange={(selected) => setOrigin(selected)}
           value={origin}
           placeholder="Type a city..."
           isSearchable
         />
       </div>
+
       <div className="form-group">
         <label>To</label>
         <Select
           options={cityOptions}
-          onChange={(selected) => {
-            console.log('Destination selected:', selected);
-            setDestination(selected);
-          }}
+          onChange={(selected) => setDestination(selected)}
           value={destination}
           placeholder="Type a city..."
           isSearchable
         />
       </div>
+
       <div className="form-group">
         <label>Travel Date</label>
         <DatePicker
@@ -92,6 +89,7 @@ function FlightSearch() {
           placeholderText="Select date"
         />
       </div>
+
       <div className="form-group">
         <label>Adults</label>
         <input
@@ -101,11 +99,14 @@ function FlightSearch() {
           min="1"
         />
       </div>
+
       <button onClick={searchFlights}>Search</button>
+
       <ul>
+        {flights.length === 0 && <li>No results or all results excluded.</li>}
         {flights.map((flight, index) => (
           <li key={index}>
-            Flight ID: {flight.id}
+            <p>Flight ID: {flight.id}</p>
             <button
               onClick={() => {
                 localStorage.setItem('selectedFlight', JSON.stringify(flight));
