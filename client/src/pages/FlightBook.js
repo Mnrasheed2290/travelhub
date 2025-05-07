@@ -23,7 +23,10 @@ function FlightBook() {
       const traveler = {
         id: '1',
         dateOfBirth: '1990-01-01',
-        name: { firstName, lastName },
+        name: {
+          firstName,
+          lastName
+        },
         gender: 'MALE',
         contact: {
           emailAddress: 'test@example.com',
@@ -56,11 +59,23 @@ function FlightBook() {
     }
   };
 
+  if (!flightOffer) {
+    return <p>No flight selected. Please go back and choose a flight.</p>;
+  }
+
   return (
     <div>
       <h2>Book Flight</h2>
-      <input placeholder="First Name" value={firstName} onChange={e => setFirstName(e.target.value)} />
-      <input placeholder="Last Name" value={lastName} onChange={e => setLastName(e.target.value)} />
+      <input
+        placeholder="First Name"
+        value={firstName}
+        onChange={(e) => setFirstName(e.target.value)}
+      />
+      <input
+        placeholder="Last Name"
+        value={lastName}
+        onChange={(e) => setLastName(e.target.value)}
+      />
       <button onClick={bookFlight}>Confirm Booking</button>
     </div>
   );
