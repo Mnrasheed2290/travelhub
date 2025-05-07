@@ -2,11 +2,11 @@
 
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import "../pages/HomePage"; // ✅ FIXED: Relative to src/
-import HomePage from "./pages/HomePage.css";
+import "./pages/HomePage.css";      // Import the CSS file correctly
+import HomePage from "./pages/HomePage";  // Import the HomePage component
 import FlightSearch from "./components/FlightSearch";
 import FlightBook from "./pages/FlightBook";
-import NavBar from "./components/NavBar";
+import NavBar from "./components/NavBar"; // Optional: Include NavBar if present
 
 function App() {
   return (
