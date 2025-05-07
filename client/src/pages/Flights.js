@@ -1,5 +1,3 @@
-// File: client/src/pages/Flights.js
-
 import React, { useState, useEffect } from "react";
 import { fetchCitiesExcludingIsrael } from "../utils/amadeusAPI";
 
@@ -10,7 +8,7 @@ function Flights() {
 
   useEffect(() => {
     const loadCities = async () => {
-      const cities = await fetchCitiesExcludingIsrael("a"); // You can loop or auto-expand this
+      const cities = await fetchCitiesExcludingIsrael("a");
       setLocations(cities);
     };
     loadCities();
