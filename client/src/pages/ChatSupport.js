@@ -1,22 +1,53 @@
 // File: client/src/pages/ChatSupport.js
-import React, { useState } from "react";
-import { TwilioChat } from "twilio-chat";
+import React, { useState, useEffect } from "react";
+import { Client as TwilioChat } from "twilio-chat";
 import "./ChatSupport.css";
 
 function ChatSupport() {
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
+  const [chatClient, setChatClient] = useState(null);
+  const [channel, setChannel] = useState(null);
+
+  useEffect(() => {
+    async function initializeChat() {
+      try {
+        const client = await TwilioChat.create(process.env.REACT_APP_TWILIO_TOKEN);
+        setChatClient(client);
+
+        let chatChannel;
+        try {
+          chatChannel = await client.getChannelByUniqueName("support");
+        } catch (e) {
+          chatChannel = await client.createChannel({
+            uniqueName: "support",
+            friendlyName: "Customer Support Chat",
+          });
+        }
+
+        await chatChannel.join();
+        setChannel(chatChannel);
+
+        chatChannel.on("messageAdded", (message) => {
+          setMessages((prevMessages) => [
+            ...prevMessages,
+            { text: message.body, sender: message.author },
+          ]);
+        });
+      } catch (error) {
+        console.error("Error initializing chat:", error);
+      }
+    }
+
+    initializeChat();
+  }, []);
 
   const sendMessage = async () => {
-    if (!message) return;
-    const newMessage = { text: message, sender: "You" };
-    setMessages([...messages, newMessage]);
-    setMessage("");
-
+    if (!message || !channel) return;
     try {
-      const client = await TwilioChat.create("YOUR_TWILIO_TOKEN");
-      const channel = await client.getChannelByUniqueName("support");
       await channel.sendMessage(message);
+      setMessages([...messages, { text: message, sender: "You" }]);
+      setMessage("");
     } catch (error) {
       console.error("Error sending message:", error);
     }
