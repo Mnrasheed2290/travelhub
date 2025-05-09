@@ -1,4 +1,3 @@
-// File: client/src/pages/ChatSupport.js
 import React, { useState, useEffect } from "react";
 import { Client as TwilioChat } from "twilio-chat";
 import "./ChatSupport.css";
@@ -6,31 +5,28 @@ import "./ChatSupport.css";
 function ChatSupport() {
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
-  const [chatClient, setChatClient] = useState(null);
   const [channel, setChannel] = useState(null);
 
   useEffect(() => {
     async function initializeChat() {
       try {
-        const client = await TwilioChat.create(process.env.REACT_APP_TWILIO_TOKEN);
-        setChatClient(client);
+        const response = await fetch("/api/twilio-token");
+        const data = await response.json();
+        const client = await TwilioChat.create(data.token);
 
-        let chatChannel;
-        try {
-          chatChannel = await client.getChannelByUniqueName("support");
-        } catch (e) {
-          chatChannel = await client.createChannel({
-            uniqueName: "support",
-            friendlyName: "Customer Support Chat",
-          });
-        }
+        client.on("tokenAboutToExpire", async () => {
+          const refreshResponse = await fetch("/api/twilio-token");
+          const refreshData = await refreshResponse.json();
+          client.updateToken(refreshData.token);
+        });
 
+        const chatChannel = await client.getChannelByUniqueName("support");
         await chatChannel.join();
         setChannel(chatChannel);
 
         chatChannel.on("messageAdded", (message) => {
-          setMessages((prevMessages) => [
-            ...prevMessages,
+          setMessages((prev) => [
+            ...prev,
             { text: message.body, sender: message.author },
           ]);
         });
@@ -44,6 +40,7 @@ function ChatSupport() {
 
   const sendMessage = async () => {
     if (!message || !channel) return;
+
     try {
       await channel.sendMessage(message);
       setMessages([...messages, { text: message, sender: "You" }]);
@@ -58,7 +55,9 @@ function ChatSupport() {
       <h2>Customer Support Chat</h2>
       <div className="chat-box">
         {messages.map((msg, index) => (
-          <p key={index}><strong>{msg.sender}:</strong> {msg.text}</p>
+          <p key={index}>
+            <strong>{msg.sender}:</strong> {msg.text}
+          </p>
         ))}
       </div>
       <input
