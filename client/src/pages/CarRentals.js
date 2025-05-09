@@ -1,78 +1,74 @@
-// File: client/src/pages/CarRentals.js
-import React, { useState } from 'react';
-import axios from 'axios';
-import './CarRentals.css';
+import React, { useState } from "react";
+import CityInput from "./CityInput";
 
-const excludedCities = ['Tel Aviv', 'Jerusalem', 'Haifa', 'Eilat', 'Israel'];
+const excludedCities = ["Tel Aviv", "Jerusalem", "Haifa", "Eilat", "Israel"];
 
 function CarRentals() {
-  const [location, setLocation] = useState('');
-  const [pickupDate, setPickupDate] = useState('');
-  const [dropoffDate, setDropoffDate] = useState('');
-  const [cars, setCars] = useState([]);
+  const [location, setLocation] = useState("");
+  const [pickupDate, setPickupDate] = useState("");
+  const [dropoffDate, setDropoffDate] = useState("");
 
-  const handleSearch = async (e) => {
+  const handleSearch = (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/cars/search`, {
-        params: {
-          location,
-          pickupDate,
-          dropoffDate,
-        },
-      });
-
-      const filteredCars = response.data.filter((car) =>
-        !excludedCities.some((city) => car.location.includes(city))
-      );
-
-      setCars(filteredCars);
-    } catch (error) {
-      console.error("Error fetching car rentals:", error);
-      alert("Error fetching car rental options.");
+    if (excludedCities.some((city) => location.includes(city))) {
+      alert("Location not allowed.");
+      return;
     }
+    alert(
+      `Searching car rentals in ${location} from ${pickupDate} to ${dropoffDate}... (Feature coming soon)`
+    );
   };
 
   return (
-    <div className="car-rental">
-      <h2>Car Rentals</h2>
-      <form onSubmit={handleSearch}>
-        <label>Location</label>
-        <input
-          type="text"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-          placeholder="City or Airport"
-          required
-        />
-        <label>Pick-Up Date</label>
-        <input
-          type="date"
-          value={pickupDate}
-          onChange={(e) => setPickupDate(e.target.value)}
-          required
-        />
-        <label>Drop-Off Date</label>
-        <input
-          type="date"
-          value={dropoffDate}
-          onChange={(e) => setDropoffDate(e.target.value)}
-          required
-        />
-        <button type="submit">Search</button>
-      </form>
-      {cars.length > 0 && (
-        <ul className="car-list">
-          {cars.map((car, index) => (
-            <li key={index}>
-              <p>{car.make} {car.model} - {car.price}</p>
-              <p>Location: {car.location}</p>
-              <button>Book Now</button>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
+    <form onSubmit={handleSearch}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label htmlFor="car-location" className="block text-gray-700 text-sm mb-1">
+            Location
+          </label>
+          <CityInput
+            id="car-location"
+            placeholder="City or airport"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+          />
+        </div>
+        <div>
+          <label htmlFor="car-pickup" className="block text-gray-700 text-sm mb-1">
+            Pick-Up Date
+          </label>
+          <input
+            id="car-pickup"
+            type="date"
+            className="w-full border border-gray-300 rounded-md px-3 py-2"
+            value={pickupDate}
+            onChange={(e) => setPickupDate(e.target.value)}
+            required
+          />
+        </div>
+        <div>
+          <label htmlFor="car-dropoff" className="block text-gray-700 text-sm mb-1">
+            Drop-Off Date
+          </label>
+          <input
+            id="car-dropoff"
+            type="date"
+            className="w-full border border-gray-300 rounded-md px-3 py-2"
+            value={dropoffDate}
+            onChange={(e) => setDropoffDate(e.target.value)}
+            required
+          />
+        </div>
+        <div className="flex items-end justify-end">
+          <button
+            type="submit"
+            className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700"
+          >
+            Search Cars
+          </button>
+        </div>
+      </div>
+    </form>
   );
 }
 
