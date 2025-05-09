@@ -1,0 +1,34 @@
+.car-rental {
+  padding: 20px;
+}
+
+.car-rental h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.car-rental .car-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.car-rental .car-item {
+  border: 1px solid #ddd;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.car-rental button {
+  margin-top: 10px;
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.car-rental button:hover {
+  background-color: #0056b3;
+}
