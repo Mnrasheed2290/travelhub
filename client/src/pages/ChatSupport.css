@@ -1,36 +1,33 @@
-.chat-support {
+.chat-container {
   padding: 20px;
 }
 
-.chat-support h2 {
-  font-size: 24px;
-  margin-bottom: 20px;
-}
-
-.chat-support .chat-window {
+.chat-box {
+  margin: 10px 0;
+  padding: 10px;
   border: 1px solid #ddd;
-  padding: 15px;
+  border-radius: 5px;
   max-height: 300px;
   overflow-y: auto;
 }
 
-.chat-support .message {
-  margin: 5px 0;
+input[type="text"] {
+  width: 80%;
+  padding: 8px;
+  margin-right: 5px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
 }
 
-.chat-support input, .chat-support button {
-  margin: 5px;
-  padding: 5px;
-}
-
-.chat-support button {
+button {
+  padding: 8px 12px;
   background-color: #007bff;
-  color: #fff;
+  color: white;
   border: none;
-  border-radius: 3px;
+  border-radius: 5px;
   cursor: pointer;
 }
 
-.chat-support button:hover {
+button:hover {
   background-color: #0056b3;
 }
