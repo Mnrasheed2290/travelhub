@@ -7,28 +7,33 @@
   margin-bottom: 20px;
 }
 
-.car-rental .car-list {
-  list-style-type: none;
-  padding: 0;
-}
-
-.car-rental .car-item {
-  border: 1px solid #ddd;
-  margin: 10px 0;
-  padding: 10px;
+.car-rental input, .car-rental button {
+  margin: 5px;
+  padding: 8px;
+  width: 100%;
+  max-width: 300px;
   border-radius: 5px;
+  border: 1px solid #ddd;
 }
 
 .car-rental button {
-  margin-top: 10px;
-  padding: 5px 10px;
   background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 3px;
+  color: white;
   cursor: pointer;
 }
 
 .car-rental button:hover {
   background-color: #0056b3;
+}
+
+.car-list {
+  list-style: none;
+  padding: 0;
+}
+
+.car-list li {
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
 }
