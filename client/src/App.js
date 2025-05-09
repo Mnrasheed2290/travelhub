@@ -1,4 +1,5 @@
 // File: client/src/App.js
+
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage";
@@ -28,6 +29,8 @@ function App() {
           <Route path="/chat" element={<ChatSupport />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/confirmation" element={<Confirmation />} />
+          <Route path="/checkout" element={<Checkout />} />
         </Routes>
       </div>
     </Router>
