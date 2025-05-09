@@ -1,0 +1,32 @@
+.checkout-page {
+  padding: 20px;
+  text-align: center;
+}
+
+.form-group {
+  margin: 15px auto;
+  max-width: 300px;
+  text-align: left;
+}
+
+input {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.pay-btn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.pay-btn:hover {
+  background-color: #218838;
+}
