@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import CityInput from "./CityInput";
+import CityInput from "../CityInput";
 
 const excludedCities = ["Tel Aviv", "Jerusalem", "Haifa", "Eilat", "Israel"];
 
