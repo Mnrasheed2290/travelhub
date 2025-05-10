@@ -1,5 +1,6 @@
 // File: client/src/App.js
 
+// File: client/src/App.js
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage";
@@ -11,6 +12,8 @@ import BookingHistory from "./pages/BookingHistory";
 import ChatSupport from "./pages/ChatSupport";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
+import Confirmation from "./pages/Confirmation";  // ✅ Added import
+import Checkout from "./pages/Checkout";          // ✅ Added import
 import NavBar from "./components/NavBar";
 import "./App.css";
 
@@ -29,8 +32,8 @@ function App() {
           <Route path="/chat" element={<ChatSupport />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/confirmation" element={<Confirmation />} />
-          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/confirmation" element={<Confirmation />} />   {/* ✅ Added */}
+          <Route path="/checkout" element={<Checkout />} />           {/* ✅ Added */}
         </Routes>
       </div>
     </Router>
