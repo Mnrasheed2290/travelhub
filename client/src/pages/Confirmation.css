@@ -1,1 +1,58 @@
+/* File: client/src/pages/Confirmation.css */
 
+.confirmation-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 85vh;
+  background: linear-gradient(to right, #f4f6f9, #eef2f7);
+  padding: 20px;
+}
+
+.confirmation-box {
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  max-width: 600px;
+  width: 100%;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+  text-align: center;
+}
+
+.confirmation-box h2 {
+  font-size: 28px;
+  color: #2b6cb0;
+  margin-bottom: 15px;
+}
+
+.thank-you-msg {
+  font-size: 16px;
+  color: #4a5568;
+  margin-bottom: 25px;
+}
+
+.confirmation-details {
+  background-color: #f7fafc;
+  padding: 20px;
+  margin-bottom: 25px;
+  border-radius: 8px;
+  text-align: left;
+  color: #2d3748;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.back-home-btn {
+  background-color: #0077cc;
+  color: white;
+  padding: 12px 28px;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.back-home-btn:hover {
+  background-color: #005fa3;
+}
