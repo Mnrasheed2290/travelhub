@@ -1,130 +1,89 @@
 .flight-search {
-  background-color: #f4f7fa;
+  max-width: 800px;
+  margin: 40px auto;
   padding: 30px;
-  max-width: 600px;
-  margin: 30px auto;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
 }
 
 .flight-search h2 {
-  text-align: center;
-  margin-bottom: 20px;
-  color: #0077cc;
   font-size: 28px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 25px;
+  color: #003366;
 }
 
 .form-group {
-  margin-bottom: 15px;
-  display: flex;
-  flex-direction: column;
+  margin-bottom: 20px;
 }
 
-.form-group label {
-  font-size: 18px;
-  margin-bottom: 8px;
+label {
+  font-size: 14px;
+  font-weight: 500;
+  display: block;
+  margin-bottom: 6px;
   color: #333;
 }
 
-.react-select-container, .react-select__control {
-  width: 100%;
-  font-size: 16px;
-  margin-bottom: 5px;
-}
-
+input,
+.react-select__control,
 .date-picker {
   width: 100%;
   padding: 10px;
-  font-size: 16px;
+  font-size: 14px;
   border: 1px solid #ccc;
-  border-radius: 5px;
-  margin-bottom: 15px;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+.date-picker {
+  padding: 9px;
 }
 
 .search-button {
-  background-color: #0077cc;
-  color: white;
-  padding: 12px;
-  font-size: 18px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
   width: 100%;
-  margin-top: 10px;
+  background-color: #004080;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 15px;
   transition: background-color 0.3s ease;
 }
 
 .search-button:hover {
-  background-color: #005ea2;
+  background-color: #0066cc;
 }
 
 .flight-list {
-  margin-top: 20px;
-  list-style-type: none;
+  list-style: none;
   padding: 0;
+  margin-top: 30px;
 }
 
 .flight-item {
-  background-color: #fff;
-  padding: 15px;
-  margin: 10px 0;
-  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 15px;
   border: 1px solid #ddd;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.flight-item p {
-  font-size: 16px;
-  margin: 0;
+  border-radius: 10px;
+  background-color: #f9f9f9;
 }
 
 .flight-item button {
-  background-color: #28a745;
+  background-color: #004080;
   color: white;
-  padding: 8px 12px;
   border: none;
-  border-radius: 5px;
+  padding: 8px 12px;
+  border-radius: 6px;
   cursor: pointer;
-  margin-top: 10px;
-  transition: background-color 0.3s ease;
+  float: right;
 }
 
 .flight-item button:hover {
-  background-color: #218838;
-}
-
-.no-results {
-  text-align: center;
-  color: #888;
-  margin: 20px 0;
-  font-size: 16px;
-}
-
-input[type="number"] {
-  width: 100%;
-  padding: 10px;
-  font-size: 16px;
-  margin-top: 5px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-@media (max-width: 768px) {
-  .flight-search {
-    padding: 20px;
-    max-width: 90%;
-  }
-
-  .search-button {
-    font-size: 16px;
-  }
-
-  .flight-item {
-    padding: 12px;
-  }
-
-  .flight-item button {
-    padding: 8px;
-  }
+  background-color: #0066cc;
 }
