@@ -1,31 +1,35 @@
+/* File: client/src/components/NavBar.css */
 .navbar {
+  background-color: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 15px 40px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 2rem;
-  background-color: #003580;
-  color: white;
+  font-family: 'Helvetica Neue', sans-serif;
 }
 
-.navbar-title {
+.logo a {
   font-size: 24px;
   font-weight: bold;
+  color: #0f172a;
+  text-decoration: none;
 }
 
-.navbar-links {
+.nav-links {
   list-style: none;
   display: flex;
-  gap: 1rem;
-  align-items: center;
+  gap: 25px;
+  margin: 0;
+  padding: 0;
 }
 
-.navbar-links a {
+.nav-links a {
   text-decoration: none;
-  color: white;
+  color: #1e293b;
   font-weight: 500;
 }
 
-select {
-  padding: 0.4rem;
-  border-radius: 4px;
+.nav-links a:hover {
+  color: #0ea5e9;
 }
