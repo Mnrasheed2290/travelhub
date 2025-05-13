@@ -6,7 +6,7 @@ import FlightSearch from "./components/FlightSearch";
 import FlightBook from "./pages/FlightBook";
 import CarRental from "./pages/CarRental";
 import Hotels from "./pages/Hotels";  // Updated component name
-import HetelSearch from "./pages/HotelSearch";
+import HotelSearch from "./pages/HotelSearch";
 import BookingHistory from "./pages/BookingHistory";
 import ChatSupport from "./pages/ChatSupport";
 import Register from "./pages/Register";
