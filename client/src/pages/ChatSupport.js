@@ -1,72 +1,40 @@
-import React, { useState, useEffect } from "react";
-import { Client as TwilioChat } from "twilio-chat";
-import "./ChatSupport.css";
+// File: client/src/pages/ChatSupport.js
+import React, { useState } from 'react';
+import './ChatSupport.css';
 
 function ChatSupport() {
   const [messages, setMessages] = useState([]);
-  const [message, setMessage] = useState("");
-  const [channel, setChannel] = useState(null);
+  const [input, setInput] = useState('');
 
-  useEffect(() => {
-    async function initializeChat() {
-      try {
-        const response = await fetch("/api/twilio-token");
-        const data = await response.json();
-        const client = await TwilioChat.create(data.token);
-
-        client.on("tokenAboutToExpire", async () => {
-          const refreshResponse = await fetch("/api/twilio-token");
-          const refreshData = await refreshResponse.json();
-          client.updateToken(refreshData.token);
-        });
-
-        const chatChannel = await client.getChannelByUniqueName("support");
-        await chatChannel.join();
-        setChannel(chatChannel);
-
-        chatChannel.on("messageAdded", (message) => {
-          setMessages((prev) => [
-            ...prev,
-            { text: message.body, sender: message.author },
-          ]);
-        });
-      } catch (error) {
-        console.error("Error initializing chat:", error);
-      }
-    }
-
-    initializeChat();
-  }, []);
-
-  const sendMessage = async () => {
-    if (!message || !channel) return;
-
-    try {
-      await channel.sendMessage(message);
-      setMessages([...messages, { text: message, sender: "You" }]);
-      setMessage("");
-    } catch (error) {
-      console.error("Error sending message:", error);
-    }
+  const sendMessage = () => {
+    if (!input.trim()) return;
+    setMessages([...messages, { sender: 'You', text: input }]);
+    setInput('');
+    // Simulate response
+    setTimeout(() => {
+      setMessages((prev) => [...prev, { sender: 'Support', text: 'Thanks for reaching out! We’ll be with you shortly.' }]);
+    }, 800);
   };
 
   return (
-    <div className="chat-container">
-      <h2>Customer Support Chat</h2>
+    <div className="chat-support">
+      <h2>Live Chat Support</h2>
       <div className="chat-box">
-        {messages.map((msg, index) => (
-          <p key={index}>
-            <strong>{msg.sender}:</strong> {msg.text}
-          </p>
+        {messages.map((msg, i) => (
+          <div key={i} className={`chat-message ${msg.sender === 'You' ? 'user' : 'support'}`}>
+            <span><strong>{msg.sender}:</strong> {msg.text}</span>
+          </div>
         ))}
       </div>
-      <input
-        type="text"
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        placeholder="Type your message..."
-      />
-      <button onClick={sendMessage}>Send</button>
+      <div className="chat-input">
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Type your message..."
+        />
+        <button onClick={sendMessage}>Send</button>
+      </div>
     </div>
   );
 }
