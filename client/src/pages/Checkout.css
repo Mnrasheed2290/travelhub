@@ -1,32 +1,55 @@
-.checkout-page {
-  padding: 20px;
-  text-align: center;
+/* File: client/src/pages/Checkout.css */
+
+.checkout-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+  background-color: #f4f6fa;
 }
 
-.form-group {
-  margin: 15px auto;
-  max-width: 300px;
-  text-align: left;
-}
-
-input {
+.checkout-form {
+  background-color: white;
+  padding: 40px;
+  border-radius: 10px;
   width: 100%;
-  padding: 8px;
-  margin-top: 5px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  max-width: 420px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
 }
 
-.pay-btn {
-  margin-top: 20px;
-  padding: 10px 20px;
-  background-color: #28a745;
+.checkout-form h2 {
+  font-size: 24px;
+  margin-bottom: 25px;
+  text-align: center;
+  color: #2d3748;
+}
+
+.checkout-form input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.checkout-row {
+  display: flex;
+  gap: 10px;
+}
+
+.checkout-form button {
+  width: 100%;
+  padding: 12px;
+  background-color: #0077cc;
   color: white;
+  font-weight: bold;
   border: none;
-  border-radius: 5px;
+  border-radius: 6px;
   cursor: pointer;
+  margin-top: 15px;
 }
 
-.pay-btn:hover {
-  background-color: #218838;
+.checkout-form button:hover {
+  background-color: #005fa3;
 }
