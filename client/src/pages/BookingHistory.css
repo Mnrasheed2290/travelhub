@@ -1,35 +1,25 @@
+/* File: client/src/pages/BookingHistory.css */
+
 .booking-history {
-  max-width: 900px;
-  margin: 60px auto;
-  padding: 40px;
-  background: #fdfdfd;
-  border-radius: 12px;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 25px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  font-family: 'Segoe UI', sans-serif;
 }
 
 .booking-history h2 {
   font-size: 28px;
-  color: #003366;
-  margin-bottom: 25px;
-  text-align: center;
-}
-
-.booking-list {
-  list-style: none;
-  padding: 0;
+  margin-bottom: 20px;
+  color: #333;
 }
 
 .booking-item {
-  background: #f7f9fc;
-  margin-bottom: 20px;
-  padding: 20px;
-  border-radius: 8px;
-  border-left: 6px solid #0077cc;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
-}
-
-.booking-item p {
-  margin: 5px 0;
-  color: #333;
+  padding: 15px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid #e6e6e6;
+  font-size: 16px;
+  color: #555;
 }
