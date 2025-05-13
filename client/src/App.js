@@ -5,13 +5,13 @@ import HomePage from "./pages/HomePage";
 import FlightSearch from "./components/FlightSearch";
 import FlightBook from "./pages/FlightBook";
 import CarRental from "./pages/CarRental";
-import HotelSearch from "./pages/HotelSearch";
+import Hotels from "./pages/Hotels";  // Updated component name
 import BookingHistory from "./pages/BookingHistory";
 import ChatSupport from "./pages/ChatSupport";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
-import Confirmation from "./pages/Confirmation";  // New import
-import Checkout from "./pages/Checkout";          // New import
+import Confirmation from "./pages/Confirmation";
+import Checkout from "./pages/Checkout";
 import NavBar from "./components/NavBar";
 import "./App.css";
 
@@ -25,13 +25,13 @@ function App() {
           <Route path="/flights" element={<FlightSearch />} />
           <Route path="/book-flight" element={<FlightBook />} />
           <Route path="/cars" element={<CarRental />} />
-          <Route path="/hotels" element={<HotelSearch />} />
+          <Route path="/hotels" element={<Hotels />} />  {/* Updated component */}
           <Route path="/bookings" element={<BookingHistory />} />
           <Route path="/chat" element={<ChatSupport />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/confirmation" element={<Confirmation />} />   {/* New route */}
-          <Route path="/checkout" element={<Checkout />} />           {/* New route */}
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/confirmation" element={<Confirmation />} />
         </Routes>
       </div>
     </Router>
