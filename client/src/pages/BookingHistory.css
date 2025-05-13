@@ -1,58 +1,35 @@
-.booking-history-container {
-  max-width: 800px;
-  margin: 20px auto;
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+.booking-history {
+  max-width: 900px;
+  margin: 60px auto;
+  padding: 40px;
+  background: #fdfdfd;
+  border-radius: 12px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.booking-history-title {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 20px;
+.booking-history h2 {
+  font-size: 28px;
+  color: #003366;
+  margin-bottom: 25px;
   text-align: center;
 }
 
 .booking-list {
-  list-style-type: none;
+  list-style: none;
   padding: 0;
 }
 
 .booking-item {
-  background-color: #fff;
-  padding: 15px;
-  margin: 10px 0;
-  border-radius: 6px;
-  border: 1px solid #ddd;
-  transition: all 0.3s ease;
+  background: #f7f9fc;
+  margin-bottom: 20px;
+  padding: 20px;
+  border-radius: 8px;
+  border-left: 6px solid #0077cc;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
 }
 
-.booking-item:hover {
-  background-color: #eef7ff;
-  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.15);
-}
-
-.booking-details {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.booking-info {
-  font-size: 16px;
+.booking-item p {
   margin: 5px 0;
-}
-
-.delete-button {
-  background-color: #ff4d4d;
-  color: white;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.delete-button:hover {
-  background-color: #e60000;
+  color: #333;
 }
