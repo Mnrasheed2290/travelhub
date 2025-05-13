@@ -1,59 +1,58 @@
+/* File: client/src/pages/HomePage.css */
+
 .home-page {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f4f7fa;
-  padding-bottom: 60px;
+  color: #333;
+  background-color: #f8f9fa;
 }
 
 .hero-banner {
   position: relative;
   width: 100%;
-  max-height: 480px;
+  height: 60vh;
   overflow: hidden;
-  border-bottom: 6px solid #004080;
+  border-radius: 8px;
+  margin-bottom: 2rem;
 }
 
 .hero-image {
   width: 100%;
-  height: auto;
+  height: 100%;
   object-fit: cover;
+  filter: brightness(75%);
 }
 
 .hero-text {
   position: absolute;
-  top: 45%;
-  left: 50%;
-  transform: translate(-50%, -45%);
-  background: rgba(0, 0, 0, 0.5);
+  top: 50%;
+  left: 10%;
+  transform: translateY(-50%);
   color: #fff;
-  padding: 40px 60px;
-  border-radius: 12px;
-  text-align: center;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
 }
 
 .hero-text h1 {
-  font-size: 42px;
-  margin-bottom: 10px;
-  font-weight: bold;
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
 }
 
 .hero-text p {
-  font-size: 18px;
-  font-weight: 300;
+  font-size: 1.3rem;
 }
 
 .search-section {
-  margin-top: 50px;
-  max-width: 850px;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 0 20px;
   text-align: center;
+  padding: 2rem 1rem;
 }
 
 .search-section h2 {
-  font-size: 28px;
-  font-weight: 600;
-  margin-bottom: 20px;
-  color: #003366;
+  font-size: 2rem;
+  color: #0056b3;
+}
+
+.search-section p {
+  margin-top: 0.5rem;
+  font-size: 1.1rem;
+  color: #666;
 }
