@@ -1,55 +1,68 @@
 /* File: client/src/pages/Checkout.css */
 
-.checkout-container {
+.checkout-page {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 80vh;
-  background-color: #f4f6fa;
+  min-height: 85vh;
+  background: linear-gradient(to right, #f8fbff, #e2ecf9);
+  padding: 30px;
 }
 
-.checkout-form {
-  background-color: white;
+.checkout-box {
+  background: white;
   padding: 40px;
-  border-radius: 10px;
+  border-radius: 12px;
+  max-width: 500px;
   width: 100%;
-  max-width: 420px;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
-.checkout-form h2 {
-  font-size: 24px;
+.checkout-box h2 {
+  font-size: 26px;
+  color: #2a4365;
+  margin-bottom: 10px;
+}
+
+.checkout-box p {
+  color: #4a5568;
   margin-bottom: 25px;
-  text-align: center;
+  font-size: 14px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
   color: #2d3748;
 }
 
-.checkout-form input {
+.form-group input {
   width: 100%;
-  padding: 12px;
-  margin: 10px 0;
-  font-size: 15px;
-  border: 1px solid #ccc;
+  padding: 10px 14px;
+  border: 1px solid #cbd5e0;
   border-radius: 6px;
+  font-size: 15px;
+  background: #f9f9f9;
 }
 
-.checkout-row {
-  display: flex;
-  gap: 10px;
-}
-
-.checkout-form button {
+.pay-btn {
   width: 100%;
   padding: 12px;
   background-color: #0077cc;
   color: white;
   font-weight: bold;
+  font-size: 16px;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  margin-top: 15px;
 }
 
-.checkout-form button:hover {
+.pay-btn:hover {
   background-color: #005fa3;
 }
