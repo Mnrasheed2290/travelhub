@@ -1,0 +1,55 @@
+/* File: client/src/pages/Hotels.css */
+
+.hotel-search {
+  max-width: 600px;
+  margin: 40px auto;
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.hotel-search h2 {
+  text-align: center;
+  color: #1e293b;
+  margin-bottom: 25px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #374151;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  background-color: #1d4ed8;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #2563eb;
+}
+
+.react-select__control {
+  border-radius: 6px;
+  border-color: #d1d5db;
+  font-size: 14px;
+}
+
+.react-select__menu {
+  z-index: 5;
+}
