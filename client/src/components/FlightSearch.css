@@ -7,6 +7,7 @@
   background: white;
   border-radius: 12px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .flight-search-container h2 {
@@ -29,6 +30,28 @@
   color: #003580;
 }
 
+/* Enhanced trip toggle buttons */
+.trip-btn {
+  padding: 0.5rem 1.25rem;
+  border: 2px solid #0071c2;
+  background: white;
+  color: #0071c2;
+  font-weight: 600;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.trip-btn.active {
+  background-color: #0071c2;
+  color: white;
+}
+
+.trip-btn:hover {
+  background-color: #005fa3;
+  color: white;
+}
+
 .form-group {
   margin-bottom: 1rem;
 }
@@ -43,15 +66,44 @@
 .form-row {
   display: flex;
   gap: 1rem;
+  flex-wrap: wrap;
 }
 
+/* Icons next to labels */
+.icon-field label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  color: #003580;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.input-icon {
+  color: #0071c2;
+  font-size: 1.1rem;
+}
+
+/* Passenger field */
 .passenger-input {
   width: 100%;
   padding: 0.5rem;
   border-radius: 8px;
   border: 1px solid #ccc;
+  font-size: 1rem;
 }
 
+/* DatePicker and Select controls */
+.react-datepicker-wrapper,
+.css-13cymwt-control,
+.css-1pahdxg-control {
+  width: 100%;
+  font-size: 1rem;
+  border-radius: 8px;
+}
+
+/* Search button */
 .search-btn {
   width: 100%;
   padding: 0.75rem;
