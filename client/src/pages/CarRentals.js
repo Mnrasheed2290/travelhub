@@ -1,12 +1,12 @@
 // File: client/src/pages/CarRentals.js
 
-import React, { useState, useEffect } from 'react';
-import Select from 'react-select';
-import DatePicker from 'react-datepicker';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import 'react-datepicker/dist/react-datepicker.css';
-import './CarRentals.css';
+import React, { useState, useEffect } from "react";
+import Select from "react-select";
+import DatePicker from "react-datepicker";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import "react-datepicker/dist/react-datepicker.css";
+import "./CarRentals.css";
 
 const CarRental = () => {
   const [city, setCity] = useState(null);
@@ -20,29 +20,22 @@ const CarRental = () => {
   useEffect(() => {
     const fetchCities = async () => {
       try {
-        const response = await axios.get(
-          `https://test.api.amadeus.com/v1/reference-data/locations`,
-          {
-            params: {
-              keyword: 'a',
-              subType: "CITY",
-            },
-            headers: {
-              Authorization: `Bearer ${process.env.REACT_APP_CARRENTALSEARCH_AMADEUS_API_KEY}`
-            }
-          }
-        );
+        const { data: tokenData } = await axios.get("https://travelhub-1.onrender.com/api/amadeus-token?service=carRentalSearch");
+        const token = tokenData.access_token;
 
-        const filtered = response.data.data.filter(
-          loc => loc.address?.countryCode !== "IL"
-        ).map(city => ({
+        const response = await axios.get("https://test.api.amadeus.com/v1/reference-data/locations", {
+          headers: { Authorization: `Bearer ${token}` },
+          params: { keyword: "a", subType: "CITY" }
+        });
+
+        const filtered = response.data.data.filter(loc => loc.address?.countryCode !== "IL").map(city => ({
           value: city.name,
           label: `${city.name}, ${city.address.countryCode}`
         }));
 
         setCityOptions(filtered);
       } catch (error) {
-        console.error("Error loading city list:", error);
+        console.error("Error loading car rental cities:", error);
         alert("Failed to load pickup cities.");
       }
     };
@@ -57,18 +50,16 @@ const CarRental = () => {
     }
 
     try {
-      const response = await axios.get(
-        `https://test.api.amadeus.com/v1/reference-data/locations`,
-        {
-          params: {
-            keyword: city.label,
-            subType: "CITY",
-          },
-          headers: {
-            Authorization: `Bearer ${process.env.REACT_APP_CARRENTALSEARCH_AMADEUS_API_KEY}`
-          }
+      const { data: tokenData } = await axios.get("https://travelhub-1.onrender.com/api/amadeus-token?service=carRentalSearch");
+      const token = tokenData.access_token;
+
+      const response = await axios.get("https://test.api.amadeus.com/v1/reference-data/locations", {
+        headers: { Authorization: `Bearer ${token}` },
+        params: {
+          keyword: city.label,
+          subType: "CITY",
         }
-      );
+      });
 
       const cityData = response.data?.data || [];
       const filtered = cityData.filter(loc => loc.address?.countryCode !== "IL");
