@@ -20,21 +20,23 @@ const CarRental = () => {
   useEffect(() => {
     const fetchCities = async () => {
       try {
-        const res = await axios.get("https://travelhub-1.onrender.com/api/hotel-cities?keyword=a");
+        const res = await axios.get("https://travelhub-1.onrender.com/api/hotel-cities", {
+          params: { keyword: "a" }
+        });
         const formatted = res.data.map(city => ({
           value: city.name,
-          label: `${city.name}, ${city.country}`,
+          label: `${city.name}, ${city.country}`
         }));
         setCityOptions(formatted);
       } catch (err) {
-        console.error("Error loading city list:", err.message);
+        console.error("Error loading car rental cities:", err.message);
         alert("Failed to load pickup cities.");
       }
     };
     fetchCities();
   }, []);
 
-  const handleSearch = async () => {
+  const handleSearch = () => {
     if (!city || !pickupDate || !returnDate || !driverAge) {
       alert("Please fill in all fields.");
       return;
@@ -45,7 +47,7 @@ const CarRental = () => {
         name: city.label,
         iataCode: "XYZ",
         pickup: pickupDate.toDateString(),
-        return: returnDate.toDateString(),
+        return: returnDate.toDateString()
       }
     ]);
   };
@@ -58,9 +60,9 @@ const CarRental = () => {
           city: city.label,
           pickup: pickupDate.toDateString(),
           return: returnDate.toDateString(),
-          driverAge,
-        },
-      },
+          driverAge
+        }
+      }
     });
   };
 
@@ -69,8 +71,9 @@ const CarRental = () => {
       <h2>Find Rental Cars</h2>
       <div className="form-group">
         <label>Pickup City</label>
-        <Select options={cityOptions} value={city} onChange={setCity} />
+        <Select options={cityOptions} value={city} onChange={setCity} isSearchable />
       </div>
+
       <div className="form-row">
         <div className="form-group">
           <label>Pickup Date</label>
@@ -81,10 +84,17 @@ const CarRental = () => {
           <DatePicker selected={returnDate} onChange={setReturnDate} />
         </div>
       </div>
+
       <div className="form-group">
         <label>Driver Age</label>
-        <input type="number" min="18" value={driverAge} onChange={(e) => setDriverAge(Number(e.target.value))} />
+        <input
+          type="number"
+          min="18"
+          value={driverAge}
+          onChange={(e) => setDriverAge(Number(e.target.value))}
+        />
       </div>
+
       <button className="search-btn" onClick={handleSearch}>Search Cars</button>
 
       {locations.length > 0 && (
