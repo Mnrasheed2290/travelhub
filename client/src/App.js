@@ -38,7 +38,7 @@ function App() {
           <Route
             path="*"
             element={
-              <div style={{ padding: "4rem", textAlign: "center" }}>
+              <div className="not-found">
                 <h2>404 – Page Not Found</h2>
                 <p>The page you’re looking for doesn’t exist.</p>
               </div>
@@ -46,8 +46,8 @@ function App() {
           />
         </Routes>
 
-        {/* Floating Chat Shortcut */}
-        <a href="/chat" className="chat-float">
+        {/* Floating chat button */}
+        <a href="/chat" className="chat-float" title="Live Chat">
           💬
         </a>
       </div>
