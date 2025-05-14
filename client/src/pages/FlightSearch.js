@@ -1,23 +1,13 @@
-// File: travelhub/client/src/components/FlightSearch.js
+// File: client/src/components/FlightSearch.js
 
-import React, { useState, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Select from "react-select";
 import DatePicker from "react-datepicker";
 import { useNavigate } from "react-router-dom";
-import { BookingContext } from "../context/BookingContext";
+import axios from "axios";
+import { BookingContext } from "./BookingContext";
 import "react-datepicker/dist/react-datepicker.css";
 import "./FlightSearch.css";
-
-const excluded = ["Tel Aviv", "Jerusalem", "Haifa", "Eilat", "Israel"];
-
-const allCities = [
-  "New York (JFK)", "Los Angeles (LAX)", "London (LHR)", "Paris (CDG)",
-  "Dubai (DXB)", "Toronto (YYZ)", "Istanbul (IST)", "Cairo (CAI)", "Doha (DOH)"
-];
-
-const cityOptions = allCities
-  .filter(city => !excluded.some(ex => city.toLowerCase().includes(ex.toLowerCase())))
-  .map(city => ({ value: city, label: city }));
 
 function FlightSearch() {
   const [tripType, setTripType] = useState("round-trip");
@@ -26,24 +16,44 @@ function FlightSearch() {
   const [departure, setDeparture] = useState(null);
   const [returnDate, setReturnDate] = useState(null);
   const [adults, setAdults] = useState(1);
+  const [cityOptions, setCityOptions] = useState([]);
   const [results, setResults] = useState([]);
 
   const { addBooking } = useContext(BookingContext);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const fetchCities = async () => {
+      try {
+        const res = await axios.get("https://travelhub-1.onrender.com/api/hotel-cities?keyword=a"); // using same endpoint
+        const formatted = res.data.map(city => ({
+          value: city.name,
+          label: `${city.name}, ${city.country}`,
+        }));
+        setCityOptions(formatted);
+      } catch (err) {
+        console.error("Flight cities fetch failed:", err.message);
+        alert("Could not load city options.");
+      }
+    };
+    fetchCities();
+  }, []);
+
   const handleSearch = () => {
     if (!from || !to || !departure || (tripType === "round-trip" && !returnDate)) {
-      alert("Please fill in all fields.");
+      alert("Please complete all fields.");
       return;
     }
 
-    setResults([{
-      flightNumber: "SKY789",
-      departure: from.label,
-      arrival: to.label,
-      date: departure.toDateString(),
-      price: "$480"
-    }]);
+    setResults([
+      {
+        flightNumber: "SKY789",
+        departure: from.label,
+        arrival: to.label,
+        date: departure.toDateString(),
+        price: "$480",
+      },
+    ]);
   };
 
   return (
