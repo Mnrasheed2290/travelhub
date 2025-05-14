@@ -6,7 +6,7 @@ import axios from 'axios';
 import API_KEYS from '../apiKeys';
 import './HotelSearch.css';
 
-const excludedCities = ['Tel Aviv', 'Jerusalem', 'Haifa', 'Eilat', 'Israel'];
+const excludedCities = ['Tel Aviv', 'Jerusalem', 'Haifa', 'Eilat', 'Israel', 'IL'];
 
 function HotelSearch() {
   const [city, setCity] = useState(null);
@@ -23,11 +23,17 @@ function HotelSearch() {
           }
         });
 
-        const filteredCities = response.data.filter(city => 
-          !excludedCities.some(ex => city.name.includes(ex) || city.countryCode === 'IL')
+        const filteredCities = response.data.filter(city =>
+          !excludedCities.some(ex =>
+            city.name.toLowerCase().includes(ex.toLowerCase()) ||
+            city.countryCode === 'IL'
+          )
         );
 
-        const options = filteredCities.map(city => ({ value: city.name, label: city.name }));
+        const options = filteredCities.map(city => ({
+          value: city.name,
+          label: `${city.name}, ${city.countryCode}`
+        }));
         setHotels(options);
       } catch (err) {
         console.error('Error loading hotel cities:', err);
@@ -46,13 +52,13 @@ function HotelSearch() {
   };
 
   return (
-    <div className="hotel-search">
-      <h2>Search for Hotels</h2>
+    <div className="hotel-search-container">
+      <h2>Luxury Hotel Search</h2>
       <div className="form-group">
-        <label>City:</label>
+        <label>City</label>
         <Select
           options={hotels}
-          onChange={(selected) => setCity(selected)}
+          onChange={setCity}
           value={city}
           placeholder="Type a city..."
           isSearchable
@@ -60,7 +66,7 @@ function HotelSearch() {
       </div>
 
       <div className="form-group">
-        <label>Check-In Date:</label>
+        <label>Check-In Date</label>
         <input
           type="date"
           value={checkInDate}
@@ -69,7 +75,7 @@ function HotelSearch() {
       </div>
 
       <div className="form-group">
-        <label>Check-Out Date:</label>
+        <label>Check-Out Date</label>
         <input
           type="date"
           value={checkOutDate}
@@ -77,7 +83,9 @@ function HotelSearch() {
         />
       </div>
 
-      <button onClick={handleSearch} className="search-button">Search Hotels</button>
+      <button className="search-btn" onClick={handleSearch}>
+        Search Hotels
+      </button>
     </div>
   );
 }
