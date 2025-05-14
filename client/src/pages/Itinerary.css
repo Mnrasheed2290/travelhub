@@ -1,0 +1,38 @@
+.itinerary-page {
+  max-width: 800px;
+  margin: 60px auto;
+  background: #fff;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.05);
+}
+
+.itinerary-page h2 {
+  margin-bottom: 24px;
+  color: #003366;
+  text-align: center;
+}
+
+.itinerary-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 24px;
+}
+
+.itinerary-actions button {
+  padding: 12px 16px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.itinerary-actions button:first-child {
+  background: #0077cc;
+  color: white;
+}
+
+.itinerary-actions button:last-child {
+  background: #e2e8f0;
+  color: #333;
+}
