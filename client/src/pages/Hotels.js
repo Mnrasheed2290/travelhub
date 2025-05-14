@@ -49,20 +49,20 @@ function Hotels() {
   }, []);
 
   return (
-    <div className="hotel-search">
-      <h2>Search Hotels</h2>
+    <div className="hotel-search-container">
+      <h2>Find Luxury Hotels</h2>
       <div className="form-group">
-        <label>City:</label>
+        <label>Select a City</label>
         <Select
           options={options}
           onChange={setCity}
           value={city}
-          placeholder="Type a city..."
+          placeholder="e.g. Paris or Dubai"
           isSearchable
+          classNamePrefix="react-select"
         />
       </div>
-
-      <button disabled={!city}>Search Hotels</button>
+      <button className="search-btn" disabled={!city}>Search Hotels</button>
     </div>
   );
 }
