@@ -4,27 +4,32 @@
   align-items: center;
   background-color: #003366;
   color: white;
-  padding: 15px 30px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 16px 32px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
-.navbar-title {
-  font-size: 26px;
+.logo .navbar-title {
+  font-size: 1.8rem;
   font-weight: bold;
   color: #ffffff;
+  text-decoration: none;
 }
 
 .navbar-links {
   list-style: none;
   display: flex;
   align-items: center;
-  gap: 25px;
+  gap: 28px;
   margin: 0;
+  padding: 0;
 }
 
 .navbar-links li {
-  font-size: 16px;
+  font-size: 15px;
 }
 
 .navbar-links a {
@@ -33,21 +38,18 @@
   font-weight: 500;
   padding: 8px 12px;
   border-radius: 6px;
-  transition: background 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .navbar-links a:hover {
   background-color: #0059b3;
 }
 
-.navbar select {
-  background-color: #ffffff;
-  color: #003366;
-  border: none;
-  border-radius: 5px;
-  padding: 6px 10px;
-  font-weight: 500;
-  font-size: 14px;
-  outline: none;
-  cursor: pointer;
+.navbar-links .active a,
+.navbar-links li.active a {
+  background-color: #0059b3;
+  font-weight: 600;
 }
