@@ -1,6 +1,6 @@
-// File: client/src/pages/CarRental.js
+// File: client/src/pages/CarRentals.js
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import DatePicker from 'react-datepicker';
 import axios from 'axios';
@@ -13,8 +13,42 @@ const CarRental = () => {
   const [pickupDate, setPickupDate] = useState(null);
   const [returnDate, setReturnDate] = useState(null);
   const [driverAge, setDriverAge] = useState(25);
+  const [cityOptions, setCityOptions] = useState([]);
   const [locations, setLocations] = useState([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchCities = async () => {
+      try {
+        const response = await axios.get(
+          `https://test.api.amadeus.com/v1/reference-data/locations`,
+          {
+            params: {
+              keyword: 'a',
+              subType: "CITY",
+            },
+            headers: {
+              Authorization: `Bearer ${process.env.REACT_APP_CARRENTALSEARCH_AMADEUS_API_KEY}`
+            }
+          }
+        );
+
+        const filtered = response.data.data.filter(
+          loc => loc.address?.countryCode !== "IL"
+        ).map(city => ({
+          value: city.name,
+          label: `${city.name}, ${city.address.countryCode}`
+        }));
+
+        setCityOptions(filtered);
+      } catch (error) {
+        console.error("Error loading city list:", error);
+        alert("Failed to load pickup cities.");
+      }
+    };
+
+    fetchCities();
+  }, []);
 
   const handleSearch = async () => {
     if (!city || !pickupDate || !returnDate || !driverAge) {
@@ -58,10 +92,6 @@ const CarRental = () => {
       }
     });
   };
-
-  const cityOptions = [
-    "New York", "Los Angeles", "London", "Paris", "Rome", "Dubai", "Istanbul", "Doha", "Cairo", "Toronto", "Chicago"
-  ].map(city => ({ value: city, label: city }));
 
   return (
     <div className="car-rental-container">
