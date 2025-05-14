@@ -1,65 +1,62 @@
 // File: server/index.js
-
-const express = require("express");
-const axios = require("axios");
-const cors = require("cors");
-require("dotenv").config();
+import express from "express";
+import axios from "axios";
+import cors from "cors";
+import dotenv from "dotenv";
+dotenv.config();
 
 const app = express();
 app.use(cors());
+app.use(express.json());
 
-const PORT = process.env.PORT || 5000;
-
-// Map services to key/secret pairs from .env
 const SERVICE_KEYS = {
-  flightOfferSearch: {
-    key: process.env.FLIGHTOFFERSEARCH_AMADEUS_API_KEY,
-    secret: process.env.FLIGHTOFFERSEARCH_AMADEUS_API_SECRET,
-  },
   hotelSearch: {
     key: process.env.HOTELSEARCH_AMADEUS_API_KEY,
     secret: process.env.HOTELSEARCH_AMADEUS_API_SECRET,
   },
-  carRentalSearch: {
-    key: process.env.CARRENTALSEARCH_AMADEUS_API_KEY,
-    secret: process.env.CARRENTALSEARCH_AMADEUS_API_SECRET,
-  }
 };
 
-app.get("/api/amadeus-token", async (req, res) => {
-  const service = req.query.service;
+const getAmadeusToken = async (service) => {
   const creds = SERVICE_KEYS[service];
+  if (!creds) throw new Error("Invalid service");
 
-  if (!creds || !creds.key || !creds.secret) {
-    return res.status(400).json({ error: "Invalid or missing service" });
-  }
+  const response = await axios.post("https://test.api.amadeus.com/v1/security/oauth2/token", new URLSearchParams({
+    grant_type: "client_credentials",
+    client_id: creds.key,
+    client_secret: creds.secret,
+  }), {
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+  });
 
+  return response.data.access_token;
+};
+
+app.get("/api/hotel-cities", async (req, res) => {
   try {
-    const response = await axios.post(
-      "https://test.api.amadeus.com/v1/security/oauth2/token",
-      new URLSearchParams({
-        grant_type: "client_credentials",
-        client_id: creds.key,
-        client_secret: creds.secret,
-      }),
-      {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-      }
+    const { keyword } = req.query;
+    const token = await getAmadeusToken("hotelSearch");
+
+    const result = await axios.get("https://test.api.amadeus.com/v1/reference-data/locations", {
+      params: { keyword, subType: "CITY" },
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    const filtered = result.data.data.filter(
+      city => city.address?.countryCode !== "IL" &&
+              !["Tel Aviv", "Jerusalem", "Eilat", "Haifa"].includes(city.name)
     );
 
-    return res.json(response.data);
+    const mapped = filtered.map(city => ({
+      name: city.name,
+      country: city.address?.countryCode,
+    }));
+
+    res.json(mapped);
   } catch (err) {
-    console.error("Amadeus token error:", err.response?.data || err.message);
-    return res.status(500).json({ error: "Token request failed" });
+    console.error("City fetch error:", err.message);
+    res.status(500).json({ error: "Failed to fetch cities" });
   }
 });
 
-app.get("/", (req, res) => {
-  res.send("Amadeus Token Server Running ✅");
-});
-
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Proxy server running on port ${PORT}`));
