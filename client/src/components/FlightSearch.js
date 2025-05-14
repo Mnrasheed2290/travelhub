@@ -10,7 +10,7 @@ import "./FlightSearch.css";
 const excluded = ["Tel Aviv", "Jerusalem", "Haifa", "Eilat", "Israel"];
 
 const allCities = [
-  "New York (JFK)", "Atlanta (ATL)", "Houston (HOU)", "Los Angeles (LAX)", "London (LHR)", "Paris (CDG)",
+  "New York (JFK)", "Los Angeles (LAX)", "London (LHR)", "Paris (CDG)",
   "Dubai (DXB)", "Toronto (YYZ)", "Istanbul (IST)", "Cairo (CAI)", "Doha (DOH)"
 ];
 
