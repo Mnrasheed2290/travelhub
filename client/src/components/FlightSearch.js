@@ -3,9 +3,9 @@
 import React, { useState, useEffect, useContext } from "react";
 import Select from "react-select";
 import DatePicker from "react-datepicker";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { BookingContext } from "./BookingContext";
+import axios from "axios";
 import "react-datepicker/dist/react-datepicker.css";
 import "./FlightSearch.css";
 
@@ -16,8 +16,8 @@ function FlightSearch() {
   const [departure, setDeparture] = useState(null);
   const [returnDate, setReturnDate] = useState(null);
   const [adults, setAdults] = useState(1);
-  const [results, setResults] = useState([]);
   const [cityOptions, setCityOptions] = useState([]);
+  const [results, setResults] = useState([]);
 
   const { addBooking } = useContext(BookingContext);
   const navigate = useNavigate();
@@ -25,29 +25,28 @@ function FlightSearch() {
   useEffect(() => {
     const fetchCities = async () => {
       try {
-        const response = await axios.get(
-          `https://test.api.amadeus.com/v1/reference-data/locations`,
-          {
-            params: {
-              keyword: "a",
-              subType: "CITY",
-            },
-            headers: {
-              Authorization: `Bearer ${process.env.REACT_APP_CARRENTALSEARCH_AMADEUS_API_KEY}`
-            }
-          }
-        );
-        const filtered = response.data.data.filter(
-          city => city.address?.countryCode !== "IL"
-        ).map(city => ({
-          value: city.name,
-          label: `${city.name}, ${city.address.countryCode}`
+        const { data: tokenData } = await axios.get("https://travelhub-1.onrender.com/api/amadeus-token?service=flightOfferSearch");
+        const token = tokenData.access_token;
+
+        const response = await axios.get("https://test.api.amadeus.com/v1/reference-data/locations", {
+          headers: { Authorization: `Bearer ${token}` },
+          params: { keyword: "a", subType: "CITY" }
+        });
+
+        const filtered = response.data.data.filter(c => c.address.countryCode !== "IL");
+
+        const formatted = filtered.map(c => ({
+          value: c.name,
+          label: `${c.name}, ${c.address.countryCode}`
         }));
-        setCityOptions(filtered);
-      } catch (error) {
-        console.error("Flight city list fetch error:", error);
+
+        setCityOptions(formatted);
+      } catch (err) {
+        console.error("Error loading flight cities:", err);
+        alert("Unable to load cities. Please try again later.");
       }
     };
+
     fetchCities();
   }, []);
 
