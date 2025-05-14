@@ -5,7 +5,7 @@ import Select from 'react-select';
 import DatePicker from 'react-datepicker';
 import axios from 'axios';
 import 'react-datepicker/dist/react-datepicker.css';
-import './CarRental.css';
+import './CarRentals.css';
 
 const CarRental = () => {
   const [city, setCity] = useState(null);
