@@ -4,7 +4,7 @@ import React, { useState, useContext } from "react";
 import Select from "react-select";
 import DatePicker from "react-datepicker";
 import { useNavigate } from "react-router-dom";
-import { BookingContext } from "../context/BookingContext";
+import { BookingContext } from "./BookingContext";
 import "react-datepicker/dist/react-datepicker.css";
 import "./FlightSearch.css";
 
