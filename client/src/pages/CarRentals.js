@@ -20,26 +20,17 @@ const CarRental = () => {
   useEffect(() => {
     const fetchCities = async () => {
       try {
-        const { data: tokenData } = await axios.get("https://travelhub-1.onrender.com/api/amadeus-token?service=carRentalSearch");
-        const token = tokenData.access_token;
-
-        const response = await axios.get("https://test.api.amadeus.com/v1/reference-data/locations", {
-          headers: { Authorization: `Bearer ${token}` },
-          params: { keyword: "a", subType: "CITY" }
-        });
-
-        const filtered = response.data.data.filter(loc => loc.address?.countryCode !== "IL").map(city => ({
+        const res = await axios.get("https://travelhub-1.onrender.com/api/hotel-cities?keyword=a");
+        const formatted = res.data.map(city => ({
           value: city.name,
-          label: `${city.name}, ${city.address.countryCode}`
+          label: `${city.name}, ${city.country}`,
         }));
-
-        setCityOptions(filtered);
-      } catch (error) {
-        console.error("Error loading car rental cities:", error);
+        setCityOptions(formatted);
+      } catch (err) {
+        console.error("Error loading city list:", err.message);
         alert("Failed to load pickup cities.");
       }
     };
-
     fetchCities();
   }, []);
 
@@ -49,51 +40,53 @@ const CarRental = () => {
       return;
     }
 
-    try {
-      const { data: tokenData } = await axios.get("https://travelhub-1.onrender.com/api/amadeus-token?service=carRentalSearch");
-      const token = tokenData.access_token;
-
-      const response = await axios.get("https://test.api.amadeus.com/v1/reference-data/locations", {
-        headers: { Authorization: `Bearer ${token}` },
-        params: {
-          keyword: city.label,
-          subType: "CITY",
-        }
-      });
-
-      const cityData = response.data?.data || [];
-      const filtered = cityData.filter(loc => loc.address?.countryCode !== "IL");
-      setLocations(filtered);
-    } catch (err) {
-      console.error("Car rental fetch error:", err);
-      alert("Error fetching car rentals.");
-    }
+    setLocations([
+      {
+        name: city.label,
+        iataCode: "XYZ",
+        pickup: pickupDate.toDateString(),
+        return: returnDate.toDateString(),
+      }
+    ]);
   };
 
   const handleBook = (loc) => {
-    navigate('/confirmation', {
+    navigate("/confirmation", {
       state: {
         bookingDetails: {
           rentalLocation: loc.name,
           city: city.label,
           pickup: pickupDate.toDateString(),
           return: returnDate.toDateString(),
-          driverAge
-        }
-      }
+          driverAge,
+        },
+      },
     });
   };
 
   return (
     <div className="car-rental-container">
       <h2>Find Rental Cars</h2>
-      <div className="form-group"><label>Pickup City</label><Select options={cityOptions} value={city} onChange={setCity} /></div>
-      <div className="form-row">
-        <div className="form-group"><label>Pickup Date</label><DatePicker selected={pickupDate} onChange={setPickupDate} /></div>
-        <div className="form-group"><label>Return Date</label><DatePicker selected={returnDate} onChange={setReturnDate} /></div>
+      <div className="form-group">
+        <label>Pickup City</label>
+        <Select options={cityOptions} value={city} onChange={setCity} />
       </div>
-      <div className="form-group"><label>Driver Age</label><input type="number" min="18" value={driverAge} onChange={(e) => setDriverAge(Number(e.target.value))} /></div>
+      <div className="form-row">
+        <div className="form-group">
+          <label>Pickup Date</label>
+          <DatePicker selected={pickupDate} onChange={setPickupDate} />
+        </div>
+        <div className="form-group">
+          <label>Return Date</label>
+          <DatePicker selected={returnDate} onChange={setReturnDate} />
+        </div>
+      </div>
+      <div className="form-group">
+        <label>Driver Age</label>
+        <input type="number" min="18" value={driverAge} onChange={(e) => setDriverAge(Number(e.target.value))} />
+      </div>
       <button className="search-btn" onClick={handleSearch}>Search Cars</button>
+
       {locations.length > 0 && (
         <div className="results-section">
           <h3>Available Locations</h3>
