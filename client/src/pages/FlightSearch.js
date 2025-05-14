@@ -1,29 +1,13 @@
-// File: client/src/pages/FlightSearch.js
-
+// File: client/src/pages/FlightSearch
 import React, { useState } from 'react';
-import Select from 'react-select';
+import Select from 'react-select/async';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import axios from 'axios';
 import './FlightSearch.css';
 
-// Full list of cities (could later be fetched from an API)
-const allCities = [
-  'New York (JFK)', 'Los Angeles (LAX)', 'Chicago (ORD)', 'London (LHR)',
-  'Paris (CDG)', 'Rome (FCO)', 'Cairo (CAI)', 'Dubai (DXB)', 'Doha (DOH)',
-  'Istanbul (IST)', 'Bangkok (BKK)', 'Tokyo (NRT)', 'Lahore (LHE)', 'Amman (AMM)',
-  'Johannesburg (JNB)', 'Nairobi (NBO)', 'Toronto (YYZ)', 'Madrid (MAD)',
-  'Kuala Lumpur (KUL)', 'Jakarta (CGK)',
-
-  // Israeli cities to be excluded
-  'Tel Aviv (TLV)', 'Jerusalem', 'Haifa', 'Eilat', 'Israel'
-];
-
-// Exclude all Israeli locations
-const excluded = ['Tel Aviv (TLV)', 'Jerusalem', 'Haifa', 'Eilat', 'Israel'];
-
-const cityOptions = allCities
-  .filter(city => !excluded.includes(city))
-  .map(city => ({ value: city, label: city }));
+const AMADEUS_API_KEY = process.env.REACT_APP_flightAMADEUS_API_KEY;
+const EXCLUDED_COUNTRY = 'IL';
 
 function FlightSearch() {
   const [tripType, setTripType] = useState('round-trip');
@@ -33,33 +17,58 @@ function FlightSearch() {
   const [returnDate, setReturnDate] = useState(null);
   const [passengers, setPassengers] = useState(1);
 
+  const fetchCities = async (inputValue) => {
+    if (!inputValue) return [];
+
+    try {
+      const response = await axios.get('https://test.api.amadeus.com/v1/reference-data/locations', {
+        params: {
+          keyword: inputValue,
+          subType: 'AIRPORT,CITY',
+        },
+        headers: {
+          Authorization: `Bearer ${AMADEUS_API_KEY}`
+        }
+      });
+
+      return response.data.data
+        .filter(loc => loc.address?.countryCode !== EXCLUDED_COUNTRY)
+        .map(loc => ({
+          value: loc.iataCode,
+          label: `${loc.name} (${loc.iataCode})`,
+        }));
+    } catch (error) {
+      console.error('Amadeus city fetch failed:', error);
+      return [];
+    }
+  };
+
   const handleSearch = () => {
     if (!fromCity || !toCity || !departureDate || (tripType === 'round-trip' && !returnDate)) {
-      alert("Please complete all fields before searching.");
+      alert("Please complete all fields.");
       return;
     }
+
     alert(`Searching flights from ${fromCity.label} to ${toCity.label}`);
   };
 
   return (
     <div className="flight-search-container">
-      <h2 className="search-title">Search Flights</h2>
+      <h2 className="search-heading">Book your flight with confidence</h2>
 
       <div className="trip-toggle">
-        <label>
+        <label className={tripType === 'round-trip' ? 'active' : ''}>
           <input
             type="radio"
-            name="tripType"
             value="round-trip"
             checked={tripType === 'round-trip'}
             onChange={() => setTripType('round-trip')}
           />
           Round-trip
         </label>
-        <label>
+        <label className={tripType === 'one-way' ? 'active' : ''}>
           <input
             type="radio"
-            name="tripType"
             value="one-way"
             checked={tripType === 'one-way'}
             onChange={() => setTripType('one-way')}
@@ -69,24 +78,28 @@ function FlightSearch() {
       </div>
 
       <div className="form-group">
-        <label>From</label>
+        <label>Departing from</label>
         <Select
-          options={cityOptions}
-          value={fromCity}
+          loadOptions={fetchCities}
           onChange={setFromCity}
-          placeholder="e.g. JFK or New York"
-          isSearchable
+          value={fromCity}
+          placeholder="City or airport"
+          isClearable
+          cacheOptions
+          defaultOptions
         />
       </div>
 
       <div className="form-group">
-        <label>To</label>
+        <label>Going to</label>
         <Select
-          options={cityOptions}
-          value={toCity}
+          loadOptions={fetchCities}
           onChange={setToCity}
-          placeholder="e.g. LHR or London"
-          isSearchable
+          value={toCity}
+          placeholder="City or airport"
+          isClearable
+          cacheOptions
+          defaultOptions
         />
       </div>
 
@@ -97,9 +110,9 @@ function FlightSearch() {
             selected={departureDate}
             onChange={setDepartureDate}
             placeholderText="Choose departure"
+            className="date-picker"
           />
         </div>
-
         {tripType === 'round-trip' && (
           <div className="form-group">
             <label>Return Date</label>
@@ -107,6 +120,7 @@ function FlightSearch() {
               selected={returnDate}
               onChange={setReturnDate}
               placeholderText="Choose return"
+              className="date-picker"
             />
           </div>
         )}
@@ -123,7 +137,7 @@ function FlightSearch() {
         />
       </div>
 
-      <button className="search-btn" onClick={handleSearch}>
+      <button className="search-button" onClick={handleSearch}>
         Search Flights
       </button>
     </div>
