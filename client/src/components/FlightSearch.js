@@ -1,23 +1,13 @@
-// File: travelhub/client/src/components/FlightSearch.js
+// File: client/src/components/FlightSearch.js
 
-import React, { useState, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Select from "react-select";
 import DatePicker from "react-datepicker";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { BookingContext } from "./BookingContext";
 import "react-datepicker/dist/react-datepicker.css";
 import "./FlightSearch.css";
-
-const excluded = ["Tel Aviv", "Jerusalem", "Haifa", "Eilat", "Israel"];
-
-const allCities = [
-  "New York (JFK)", "Los Angeles (LAX)", "London (LHR)", "Paris (CDG)",
-  "Dubai (DXB)", "Toronto (YYZ)", "Istanbul (IST)", "Cairo (CAI)", "Doha (DOH)"
-];
-
-const cityOptions = allCities
-  .filter(city => !excluded.some(ex => city.toLowerCase().includes(ex.toLowerCase())))
-  .map(city => ({ value: city, label: city }));
 
 function FlightSearch() {
   const [tripType, setTripType] = useState("round-trip");
@@ -27,9 +17,39 @@ function FlightSearch() {
   const [returnDate, setReturnDate] = useState(null);
   const [adults, setAdults] = useState(1);
   const [results, setResults] = useState([]);
+  const [cityOptions, setCityOptions] = useState([]);
 
   const { addBooking } = useContext(BookingContext);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchCities = async () => {
+      try {
+        const response = await axios.get(
+          `https://test.api.amadeus.com/v1/reference-data/locations`,
+          {
+            params: {
+              keyword: "a",
+              subType: "CITY",
+            },
+            headers: {
+              Authorization: `Bearer ${process.env.REACT_APP_CARRENTALSEARCH_AMADEUS_API_KEY}`
+            }
+          }
+        );
+        const filtered = response.data.data.filter(
+          city => city.address?.countryCode !== "IL"
+        ).map(city => ({
+          value: city.name,
+          label: `${city.name}, ${city.address.countryCode}`
+        }));
+        setCityOptions(filtered);
+      } catch (error) {
+        console.error("Flight city list fetch error:", error);
+      }
+    };
+    fetchCities();
+  }, []);
 
   const handleSearch = () => {
     if (!from || !to || !departure || (tripType === "round-trip" && !returnDate)) {
