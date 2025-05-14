@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { BookingContext } from "../components/BookingContext";
 import "./HotelSearch.css";
 
-const HotelSearch = () => {
+function HotelSearch() {
   const [city, setCity] = useState(null);
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
@@ -22,31 +22,28 @@ const HotelSearch = () => {
   useEffect(() => {
     const fetchCities = async () => {
       try {
-        const response = await axios.get(
-          `https://test.api.amadeus.com/v1/reference-data/locations`,
-          {
-            params: {
-              keyword: "a",
-              subType: "CITY",
-            },
-            headers: {
-              Authorization: `Bearer ${process.env.REACT_APP_CARRENTALSEARCH_AMADEUS_API_KEY}`
-            }
-          }
-        );
+        const { data: tokenData } = await axios.get("https://travelhub-1.onrender.com/api/amadeus-token?service=hotelSearch");
+        const token = tokenData.access_token;
 
-        const filtered = response.data.data.filter(
-          city => city.address?.countryCode !== "IL"
-        ).map(city => ({
-          value: city.name,
-          label: `${city.name}, ${city.address.countryCode}`
+        const response = await axios.get("https://test.api.amadeus.com/v1/reference-data/locations", {
+          headers: { Authorization: `Bearer ${token}` },
+          params: { keyword: "a", subType: "CITY" }
+        });
+
+        const filtered = response.data.data.filter(c => c.address.countryCode !== "IL");
+
+        const formatted = filtered.map(c => ({
+          value: c.name,
+          label: `${c.name}, ${c.address.countryCode}`
         }));
 
-        setOptions(filtered);
+        setOptions(formatted);
       } catch (err) {
         console.error("Error loading hotel cities:", err);
+        alert("Error loading cities.");
       }
     };
+
     fetchCities();
   }, []);
 
@@ -95,6 +92,6 @@ const HotelSearch = () => {
       )}
     </div>
   );
-};
+}
 
 export default HotelSearch;
