@@ -1,7 +1,7 @@
 // File: travelhub/client/src/pages/Itinerary.js
 
 import React, { useContext } from "react";
-import { BookingContext } from "../context/BookingContext";
+import { BookingContext } from "../components/BookingContext";
 import { useNavigate } from "react-router-dom";
 import "./Itinerary.css";
 
@@ -22,7 +22,7 @@ const Itinerary = () => {
       ) : (
         itinerary.map((item, i) => (
           <div className="result-card" key={i}>
-            <h4>{item.type === "flight" ? "✈️ Flight" : item.type === "hotel" ? "🏨 Hotel" : "🚗 Car"}</h4>
+            <h4>{item.type === "flight" ? "\u2708\uFE0F Flight" : item.type === "hotel" ? "\ud83c\udfe8 Hotel" : "\ud83d\ude97 Car"}</h4>
             <pre>{JSON.stringify(item, null, 2)}</pre>
           </div>
         ))
