@@ -1,16 +1,13 @@
-// File: travelhub/client/src/pages/HotelSearch.js
+// File: client/src/pages/HotelSearch.js
 
 import React, { useState, useEffect, useContext } from "react";
 import Select from "react-select";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { BookingContext } from "../components/BookingContext";
-import API_KEYS from "../apiKeys";
 import "./HotelSearch.css";
 
-const excludedCities = ["Tel Aviv", "Jerusalem", "Haifa", "Eilat", "Israel", "IL"];
-
-function HotelSearch() {
+const HotelSearch = () => {
   const [city, setCity] = useState(null);
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
@@ -25,19 +22,27 @@ function HotelSearch() {
   useEffect(() => {
     const fetchCities = async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/hotels/cities`, {
-          headers: { Authorization: `Bearer ${API_KEYS.hotelSearch.key}` }
-        });
-        const filtered = response.data.filter(city =>
-          !excludedCities.some(ex =>
-            city.name.toLowerCase().includes(ex.toLowerCase()) || city.countryCode === "IL"
-          )
+        const response = await axios.get(
+          `https://test.api.amadeus.com/v1/reference-data/locations`,
+          {
+            params: {
+              keyword: "a",
+              subType: "CITY",
+            },
+            headers: {
+              Authorization: `Bearer ${process.env.REACT_APP_CARRENTALSEARCH_AMADEUS_API_KEY}`
+            }
+          }
         );
-        const formatted = filtered.map(city => ({
+
+        const filtered = response.data.data.filter(
+          city => city.address?.countryCode !== "IL"
+        ).map(city => ({
           value: city.name,
-          label: `${city.name}, ${city.countryCode}`
+          label: `${city.name}, ${city.address.countryCode}`
         }));
-        setOptions(formatted);
+
+        setOptions(filtered);
       } catch (err) {
         console.error("Error loading hotel cities:", err);
       }
@@ -90,6 +95,6 @@ function HotelSearch() {
       )}
     </div>
   );
-}
+};
 
 export default HotelSearch;
