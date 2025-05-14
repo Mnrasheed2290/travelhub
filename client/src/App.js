@@ -15,6 +15,7 @@ import Login from "./pages/Login";
 import Confirmation from "./pages/Confirmation";
 import Checkout from "./pages/Checkout";
 import NavBar from "./components/NavBar";
+import { BookingProvider } from "./components/BookingContext";
 import "./App.css";
 
 function App() {
