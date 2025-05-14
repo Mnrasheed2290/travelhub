@@ -1,0 +1,87 @@
+.flight-search-container {
+  max-width: 800px;
+  margin: 50px auto;
+  padding: 40px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.search-title {
+  font-size: 30px;
+  margin-bottom: 32px;
+  text-align: center;
+  color: #003366;
+  font-weight: 700;
+}
+
+.trip-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.trip-toggle label {
+  font-weight: 600;
+  font-size: 16px;
+  color: #003366;
+}
+
+.trip-toggle input[type="radio"] {
+  margin-right: 6px;
+}
+
+.form-group {
+  margin-bottom: 24px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #444;
+  font-size: 15px;
+}
+
+.form-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.form-group input[type="number"],
+.passenger-input,
+.react-datepicker-wrapper,
+.react-select__control {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+.react-select__control {
+  border-color: #ccc !important;
+  box-shadow: none !important;
+}
+
+.search-btn {
+  display: block;
+  width: 100%;
+  padding: 16px;
+  font-size: 17px;
+  background-color: #0077cc;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background 0.3s ease;
+}
+
+.search-btn:hover {
+  background-color: #005fa3;
+}
