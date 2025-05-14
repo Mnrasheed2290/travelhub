@@ -4,8 +4,8 @@ import React, { useState, useEffect, useContext } from "react";
 import Select from "react-select";
 import DatePicker from "react-datepicker";
 import { useNavigate } from "react-router-dom";
-import { BookingContext } from "./BookingContext";
 import axios from "axios";
+import { BookingContext } from "./BookingContext";
 import "react-datepicker/dist/react-datepicker.css";
 import "./FlightSearch.css";
 
@@ -25,44 +25,35 @@ function FlightSearch() {
   useEffect(() => {
     const fetchCities = async () => {
       try {
-        const { data: tokenData } = await axios.get("https://travelhub-1.onrender.com/api/amadeus-token?service=flightOfferSearch");
-        const token = tokenData.access_token;
-
-        const response = await axios.get("https://test.api.amadeus.com/v1/reference-data/locations", {
-          headers: { Authorization: `Bearer ${token}` },
-          params: { keyword: "a", subType: "CITY" }
-        });
-
-        const filtered = response.data.data.filter(c => c.address.countryCode !== "IL");
-
-        const formatted = filtered.map(c => ({
-          value: c.name,
-          label: `${c.name}, ${c.address.countryCode}`
+        const res = await axios.get("https://travelhub-1.onrender.com/api/hotel-cities?keyword=a"); // using same endpoint
+        const formatted = res.data.map(city => ({
+          value: city.name,
+          label: `${city.name}, ${city.country}`,
         }));
-
         setCityOptions(formatted);
       } catch (err) {
-        console.error("Error loading flight cities:", err);
-        alert("Unable to load cities. Please try again later.");
+        console.error("Flight cities fetch failed:", err.message);
+        alert("Could not load city options.");
       }
     };
-
     fetchCities();
   }, []);
 
   const handleSearch = () => {
     if (!from || !to || !departure || (tripType === "round-trip" && !returnDate)) {
-      alert("Please fill in all fields.");
+      alert("Please complete all fields.");
       return;
     }
 
-    setResults([{
-      flightNumber: "SKY789",
-      departure: from.label,
-      arrival: to.label,
-      date: departure.toDateString(),
-      price: "$480"
-    }]);
+    setResults([
+      {
+        flightNumber: "SKY789",
+        departure: from.label,
+        arrival: to.label,
+        date: departure.toDateString(),
+        price: "$480",
+      },
+    ]);
   };
 
   return (
