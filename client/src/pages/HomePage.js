@@ -1,10 +1,20 @@
 // File: client/src/pages/HomePage.js
 
-import React from "react";
-import { FaPlaneDeparture, FaHotel, FaCar } from "react-icons/fa";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { FaHotel, FaPlane, FaCar } from "react-icons/fa";
 import "./HomePage.css";
 
 const HomePage = () => {
+  const [tab, setTab] = useState("hotels");
+  const navigate = useNavigate();
+
+  const handleRedirect = () => {
+    if (tab === "flights") navigate("/flights");
+    else if (tab === "cars") navigate("/cars");
+    else navigate("/hotels");
+  };
+
   return (
     <div className="home-page">
       <div className="hero-banner">
@@ -19,29 +29,19 @@ const HomePage = () => {
         </div>
       </div>
 
-      <div className="search-section">
-        <h2>Plan Your Journey</h2>
-        <p>Book flights, hotels, and rental cars with unbeatable deals.</p>
-
-        <div className="icon-section">
-          <div className="icon-card">
-            <FaPlaneDeparture className="icon" />
-            <h3>Flights</h3>
-            <p>Find the best prices on international and domestic airfares.</p>
-          </div>
-
-          <div className="icon-card">
-            <FaHotel className="icon" />
-            <h3>Hotels</h3>
-            <p>Stay in comfort with our exclusive luxury hotel deals.</p>
-          </div>
-
-          <div className="icon-card">
-            <FaCar className="icon" />
-            <h3>Car Rentals</h3>
-            <p>Rent premium cars for your journey at the best rates.</p>
-          </div>
+      <div className="homepage-tabs">
+        <div className="tab-buttons">
+          <button className={tab === "hotels" ? "active" : ""} onClick={() => setTab("hotels")}>
+            <FaHotel /> Hotels
+          </button>
+          <button className={tab === "flights" ? "active" : ""} onClick={() => setTab("flights")}>
+            <FaPlane /> Flights
+          </button>
+          <button className={tab === "cars" ? "active" : ""} onClick={() => setTab("cars")}>
+            <FaCar /> Cars
+          </button>
         </div>
+        <button className="go-search" onClick={handleRedirect}>Go to {tab.charAt(0).toUpperCase() + tab.slice(1)} Search</button>
       </div>
     </div>
   );
