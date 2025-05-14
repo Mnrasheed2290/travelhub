@@ -1,92 +1,70 @@
-.flight-search {
-  max-width: 800px;
-  margin: 50px auto;
-  padding: 40px;
-  background: #ffffff;
+/* File: client/src/pages/FlightSearch.css */
+
+.flight-search-container {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: white;
   border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.07);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
-.flight-search h2 {
-  font-size: 28px;
-  margin-bottom: 30px;
+.flight-search-container h2 {
   text-align: center;
-  color: #003366;
+  color: #003580;
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+}
+
+.trip-type-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.trip-type-toggle label {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #003580;
 }
 
 .form-group {
-  margin-bottom: 25px;
+  margin-bottom: 1rem;
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 8px;
-  font-weight: 600;
+  font-weight: 500;
   color: #333;
+  margin-bottom: 0.5rem;
 }
 
-.date-picker,
-input[type="number"] {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 16px;
-}
-
-.search-button {
-  display: block;
-  width: 100%;
-  padding: 14px;
-  font-size: 16px;
-  background-color: #0077cc;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-weight: bold;
-  cursor: pointer;
-  margin-top: 10px;
-  transition: background 0.3s ease;
-}
-
-.search-button:hover {
-  background-color: #005fa3;
-}
-
-.flight-list {
-  list-style: none;
-  margin-top: 30px;
-  padding: 0;
-}
-
-.flight-item {
-  padding: 15px;
-  margin-bottom: 15px;
-  background: #f8f9fb;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+.form-row {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  gap: 1rem;
 }
 
-.flight-item p {
-  margin: 0;
-  color: #003366;
+.passenger-input {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
 }
 
-.flight-item button {
-  background-color: #003366;
+.search-btn {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  background-color: #0071c2;
   color: white;
-  padding: 8px 16px;
   border: none;
-  border-radius: 6px;
-  font-weight: bold;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background 0.2s ease;
+  margin-top: 1rem;
+  transition: background-color 0.3s ease;
 }
 
-.flight-item button:hover {
-  background-color: #0059b3;
+.search-btn:hover {
+  background-color: #005fa3;
 }
