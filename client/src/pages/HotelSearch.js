@@ -5,87 +5,125 @@ import Select from 'react-select';
 import axios from 'axios';
 import API_KEYS from '../apiKeys';
 import './HotelSearch.css';
+import { FaHotel, FaPlane, FaCar, FaSuitcase } from 'react-icons/fa';
 
 const excludedCities = ['Tel Aviv', 'Jerusalem', 'Haifa', 'Eilat', 'Israel', 'IL'];
 
 function HotelSearch() {
+  const [tab, setTab] = useState('hotels');
   const [city, setCity] = useState(null);
   const [checkInDate, setCheckInDate] = useState('');
   const [checkOutDate, setCheckOutDate] = useState('');
-  const [hotels, setHotels] = useState([]);
+  const [rooms, setRooms] = useState(1);
+  const [adults, setAdults] = useState(2);
+  const [bundleCar, setBundleCar] = useState(false);
+  const [bundleFlight, setBundleFlight] = useState(false);
+  const [options, setOptions] = useState([]);
 
   useEffect(() => {
-    const fetchHotels = async () => {
+    const fetchCities = async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/hotels/cities`, {
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/hotels/cities`, {
           headers: {
-            'Authorization': `Bearer ${API_KEYS.hotelSearch.key}`
-          }
+            Authorization: `Bearer ${API_KEYS.hotelSearch.key}`,
+          },
         });
-
-        const filteredCities = response.data.filter(city =>
+        const filtered = res.data.filter(c =>
           !excludedCities.some(ex =>
-            city.name.toLowerCase().includes(ex.toLowerCase()) ||
-            city.countryCode === 'IL'
+            c.name.toLowerCase().includes(ex.toLowerCase()) || c.countryCode === 'IL'
           )
         );
-
-        const options = filteredCities.map(city => ({
-          value: city.name,
-          label: `${city.name}, ${city.countryCode}`
+        const formatted = filtered.map(c => ({
+          value: c.name,
+          label: `${c.name}, ${c.countryCode}`,
         }));
-        setHotels(options);
+        setOptions(formatted);
       } catch (err) {
         console.error('Error loading hotel cities:', err);
-        alert("Error loading hotel cities.");
       }
     };
-    fetchHotels();
+    fetchCities();
   }, []);
 
   const handleSearch = () => {
     if (!city || !checkInDate || !checkOutDate) {
-      alert('Please fill all fields');
+      alert('Please fill all required fields.');
       return;
     }
-    alert(`Searching hotels in ${city.value} from ${checkInDate} to ${checkOutDate}`);
+    alert(`Searching hotels in ${city.label}, ${adults} Adults, ${rooms} Room${rooms > 1 ? 's' : ''}`);
   };
 
   return (
-    <div className="hotel-search-container">
-      <h2>Luxury Hotel Search</h2>
-      <div className="form-group">
-        <label>City</label>
-        <Select
-          options={hotels}
-          onChange={setCity}
-          value={city}
-          placeholder="Type a city..."
-          isSearchable
-        />
+    <div className="hotel-search-card">
+      <div className="tab-header">
+        <button className={tab === 'hotels' ? 'active' : ''} onClick={() => setTab('hotels')}>
+          <FaHotel /> Hotels
+        </button>
+        <button className={tab === 'flights'} disabled>
+          <FaPlane /> Flights
+        </button>
+        <button className={tab === 'cars'} disabled>
+          <FaCar /> Cars
+        </button>
       </div>
 
-      <div className="form-group">
-        <label>Check-In Date</label>
-        <input
-          type="date"
-          value={checkInDate}
-          onChange={(e) => setCheckInDate(e.target.value)}
-        />
-      </div>
+      <div className="tab-body">
+        <div className="input-group">
+          <label>Where to?</label>
+          <Select
+            options={options}
+            value={city}
+            onChange={setCity}
+            placeholder="e.g. Paris or Dubai"
+            isSearchable
+          />
+        </div>
 
-      <div className="form-group">
-        <label>Check-Out Date</label>
-        <input
-          type="date"
-          value={checkOutDate}
-          onChange={(e) => setCheckOutDate(e.target.value)}
-        />
-      </div>
+        <div className="date-row">
+          <div className="input-group">
+            <label>Check-in</label>
+            <input type="date" value={checkInDate} onChange={e => setCheckInDate(e.target.value)} />
+          </div>
+          <div className="input-group">
+            <label>Check-out</label>
+            <input type="date" value={checkOutDate} onChange={e => setCheckOutDate(e.target.value)} />
+          </div>
+        </div>
 
-      <button className="search-btn" onClick={handleSearch}>
-        Search Hotels
-      </button>
+        <div className="input-group row">
+          <label>Guests</label>
+          <div className="room-selectors">
+            <input
+              type="number"
+              value={adults}
+              min={1}
+              onChange={e => setAdults(Number(e.target.value))}
+              placeholder="Adults"
+            />
+            <input
+              type="number"
+              value={rooms}
+              min={1}
+              onChange={e => setRooms(Number(e.target.value))}
+              placeholder="Rooms"
+            />
+          </div>
+        </div>
+
+        <div className="bundle-row">
+          <span className="bundle-label"><FaSuitcase /> Bundle + Save</span>
+          <label>
+            <input type="checkbox" checked={bundleCar} onChange={() => setBundleCar(!bundleCar)} />
+            Add a car
+          </label>
+          <label>
+            <input type="checkbox" checked={bundleFlight} onChange={() => setBundleFlight(!bundleFlight)} />
+            Add a flight
+          </label>
+        </div>
+
+        <button className="search-btn" onClick={handleSearch}>Find Your Hotel</button>
+      </div>
     </div>
   );
 }
