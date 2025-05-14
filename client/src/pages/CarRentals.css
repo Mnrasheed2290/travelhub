@@ -1,41 +1,73 @@
-.car-results {
-  margin-top: 40px;
+.car-rental-container {
+  max-width: 700px;
+  margin: 60px auto;
+  background: #fff;
+  padding: 32px;
+  border-radius: 16px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.07);
+  font-family: 'Segoe UI', sans-serif;
 }
 
-.car-results h3 {
-  font-size: 1.4rem;
+.car-rental-container h2 {
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 24px;
   color: #003366;
-  margin-bottom: 16px;
 }
 
-.car-cards {
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-row {
   display: flex;
-  flex-wrap: wrap;
   gap: 20px;
+  flex-wrap: wrap;
 }
 
-.car-card {
-  background: #f8f9fa;
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  padding: 20px;
-  width: 220px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
 }
 
-.car-card h4 {
-  margin-bottom: 6px;
-  font-size: 1.1rem;
+.search-btn {
+  width: 100%;
+  background-color: #0077cc;
+  color: white;
+  padding: 14px;
+  font-size: 17px;
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.search-btn:hover {
+  background-color: #005fa3;
+}
+
+.results-section {
+  margin-top: 30px;
+}
+
+.results-section h3 {
+  font-size: 1.4rem;
+  margin-bottom: 12px;
   color: #003366;
 }
 
-.car-card p {
-  color: #555;
-  font-size: 0.95rem;
-  margin-bottom: 8px;
+.results-section ul {
+  list-style: none;
+  padding-left: 0;
 }
 
-.car-card strong {
-  font-weight: bold;
-  color: #0077cc;
+.results-section li {
+  padding: 10px;
+  background: #f4f4f4;
+  margin-bottom: 8px;
+  border-radius: 6px;
 }
