@@ -1,94 +1,48 @@
-/* Global styles */
-body {
+/* File: client/src/App.css */
+
+body, html {
   margin: 0;
+  padding: 0;
+  background-color: #f8f9fa;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f4f6f9;
-  color: #333;
 }
 
-/* App container */
 .app {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
-}
-
-/* Navbar styles */
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #002c5f;
-  padding: 15px 20px;
-  color: white;
-}
-
-.navbar-title {
-  font-size: 1.5rem;
-  font-weight: bold;
-  letter-spacing: 0.5px;
-}
-
-.navbar-links {
-  display: flex;
-  list-style: none;
-  gap: 20px;
-}
-
-.navbar-links li a {
-  color: white;
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.navbar-links li select {
-  padding: 5px 8px;
-  border-radius: 4px;
-  border: none;
-}
-
-/* Hero section */
-.hero-banner {
   position: relative;
-  width: 100%;
-  height: 320px;
-  overflow: hidden;
-  border-radius: 10px;
-  margin-bottom: 20px;
+  min-height: 100vh;
 }
 
-.hero-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: brightness(0.75);
-}
-
-.hero-text {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: white;
+.not-found {
   text-align: center;
+  padding: 60px 20px;
+  color: #003366;
 }
 
-.hero-text h1 {
-  font-size: 3rem;
-  margin: 0;
-  font-weight: 700;
-}
-
-.hero-text p {
-  font-size: 1.25rem;
-  margin-top: 10px;
-  font-weight: 400;
-}
-
-/* Section titles */
-.search-section h2 {
+.not-found h2 {
   font-size: 2rem;
-  margin: 30px 0 15px;
-  text-align: center;
-  color: #002c5f;
+  margin-bottom: 10px;
+}
+
+.not-found p {
+  font-size: 1.1rem;
+  color: #555;
+}
+
+.chat-float {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background-color: #0077cc;
+  color: white;
+  font-size: 22px;
+  padding: 14px;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  z-index: 999;
+  text-decoration: none;
+  transition: background 0.3s ease;
+}
+
+.chat-float:hover {
+  background-color: #005fa3;
 }
