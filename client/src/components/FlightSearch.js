@@ -25,10 +25,12 @@ function FlightSearch() {
   useEffect(() => {
     const fetchCities = async () => {
       try {
-        const res = await axios.get("https://travelhub-1.onrender.com/api/hotel-cities?keyword=a"); // using same endpoint
+        const res = await axios.get("https://travelhub-1.onrender.com/api/hotel-cities", {
+          params: { keyword: "a" }
+        });
         const formatted = res.data.map(city => ({
           value: city.name,
-          label: `${city.name}, ${city.country}`,
+          label: `${city.name}, ${city.country}`
         }));
         setCityOptions(formatted);
       } catch (err) {
@@ -51,8 +53,8 @@ function FlightSearch() {
         departure: from.label,
         arrival: to.label,
         date: departure.toDateString(),
-        price: "$480",
-      },
+        price: "$480"
+      }
     ]);
   };
 
@@ -62,26 +64,59 @@ function FlightSearch() {
 
       <div className="trip-toggle">
         <label>
-          <input type="radio" name="tripType" value="round-trip" checked={tripType === "round-trip"} onChange={() => setTripType("round-trip")} />
+          <input
+            type="radio"
+            name="tripType"
+            value="round-trip"
+            checked={tripType === "round-trip"}
+            onChange={() => setTripType("round-trip")}
+          />
           Round-trip
         </label>
         <label>
-          <input type="radio" name="tripType" value="one-way" checked={tripType === "one-way"} onChange={() => setTripType("one-way")} />
+          <input
+            type="radio"
+            name="tripType"
+            value="one-way"
+            checked={tripType === "one-way"}
+            onChange={() => setTripType("one-way")}
+          />
           One-way
         </label>
       </div>
 
-      <div className="form-group"><label>From</label><Select options={cityOptions} value={from} onChange={setFrom} /></div>
-      <div className="form-group"><label>To</label><Select options={cityOptions} value={to} onChange={setTo} /></div>
+      <div className="form-group">
+        <label>From</label>
+        <Select options={cityOptions} value={from} onChange={setFrom} isSearchable />
+      </div>
+
+      <div className="form-group">
+        <label>To</label>
+        <Select options={cityOptions} value={to} onChange={setTo} isSearchable />
+      </div>
 
       <div className="date-row">
-        <div className="form-group"><label>Departure</label><DatePicker selected={departure} onChange={setDeparture} /></div>
+        <div className="form-group">
+          <label>Departure</label>
+          <DatePicker selected={departure} onChange={setDeparture} />
+        </div>
         {tripType === "round-trip" && (
-          <div className="form-group"><label>Return</label><DatePicker selected={returnDate} onChange={setReturnDate} /></div>
+          <div className="form-group">
+            <label>Return</label>
+            <DatePicker selected={returnDate} onChange={setReturnDate} />
+          </div>
         )}
       </div>
 
-      <div className="form-group"><label>Passengers</label><input type="number" min={1} value={adults} onChange={(e) => setAdults(Number(e.target.value))} /></div>
+      <div className="form-group">
+        <label>Passengers</label>
+        <input
+          type="number"
+          min={1}
+          value={adults}
+          onChange={(e) => setAdults(Number(e.target.value))}
+        />
+      </div>
 
       <button className="search-btn" onClick={handleSearch}>Find Flights</button>
 
