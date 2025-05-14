@@ -31,17 +31,55 @@ const HomePage = () => {
 
       <div className="homepage-tabs">
         <div className="tab-buttons">
-          <button className={tab === "hotels" ? "active" : ""} onClick={() => setTab("hotels")}>
+          <button
+            className={tab === "hotels" ? "active" : ""}
+            onClick={() => setTab("hotels")}
+          >
             <FaHotel /> Hotels
           </button>
-          <button className={tab === "flights" ? "active" : ""} onClick={() => setTab("flights")}>
+          <button
+            className={tab === "flights" ? "active" : ""}
+            onClick={() => setTab("flights")}
+          >
             <FaPlane /> Flights
           </button>
-          <button className={tab === "cars" ? "active" : ""} onClick={() => setTab("cars")}>
+          <button
+            className={tab === "cars" ? "active" : ""}
+            onClick={() => setTab("cars")}
+          >
             <FaCar /> Cars
           </button>
         </div>
-        <button className="go-search" onClick={handleRedirect}>Go to {tab.charAt(0).toUpperCase() + tab.slice(1)} Search</button>
+        <button className="go-search" onClick={handleRedirect}>
+          Book {tab.charAt(0).toUpperCase() + tab.slice(1)} Now
+        </button>
+      </div>
+
+      <div className="deals-section">
+        <h2>Today's Featured Deals</h2>
+        <ul className="deals-grid">
+          <li className="deal-card">
+            <img src="/assets/deal1.jpg" alt="Deal 1" />
+            <div className="deal-info">
+              <h3>Dubai Escape</h3>
+              <p>Save up to 40% on 5-star hotels in Dubai.</p>
+            </div>
+          </li>
+          <li className="deal-card">
+            <img src="/assets/deal2.jpg" alt="Deal 2" />
+            <div className="deal-info">
+              <h3>London Flights</h3>
+              <p>Round-trip from $450 this weekend only!</p>
+            </div>
+          </li>
+          <li className="deal-card">
+            <img src="/assets/deal3.jpg" alt="Deal 3" />
+            <div className="deal-info">
+              <h3>Car Rentals in Cairo</h3>
+              <p>Drive through the city for just $25/day.</p>
+            </div>
+          </li>
+        </ul>
       </div>
     </div>
   );
