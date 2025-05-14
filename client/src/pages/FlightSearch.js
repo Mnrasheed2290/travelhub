@@ -1,9 +1,10 @@
-// File: client/src/components/FlightSearch.js
+// File: travelhub/client/src/components/FlightSearch.js
 
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Select from "react-select";
 import DatePicker from "react-datepicker";
 import { useNavigate } from "react-router-dom";
+import { BookingContext } from "../context/BookingContext";
 import "react-datepicker/dist/react-datepicker.css";
 import "./FlightSearch.css";
 
@@ -25,6 +26,9 @@ function FlightSearch() {
   const [departure, setDeparture] = useState(null);
   const [returnDate, setReturnDate] = useState(null);
   const [adults, setAdults] = useState(1);
+  const [results, setResults] = useState([]);
+
+  const { addBooking } = useContext(BookingContext);
   const navigate = useNavigate();
 
   const handleSearch = () => {
@@ -33,16 +37,13 @@ function FlightSearch() {
       return;
     }
 
-    navigate("/confirmation", {
-      state: {
-        bookingDetails: {
-          flightNumber: "SKY123",
-          departure: from.label,
-          arrival: to.label,
-          date: departure.toDateString(),
-        },
-      },
-    });
+    setResults([{
+      flightNumber: "SKY789",
+      departure: from.label,
+      arrival: to.label,
+      date: departure.toDateString(),
+      price: "$480"
+    }]);
   };
 
   return (
@@ -60,17 +61,35 @@ function FlightSearch() {
         </label>
       </div>
 
-      <div className="form-group"><label>From</label><Select options={cityOptions} value={from} onChange={setFrom} placeholder="Departure city" /></div>
-      <div className="form-group"><label>To</label><Select options={cityOptions} value={to} onChange={setTo} placeholder="Destination city" /></div>
+      <div className="form-group"><label>From</label><Select options={cityOptions} value={from} onChange={setFrom} /></div>
+      <div className="form-group"><label>To</label><Select options={cityOptions} value={to} onChange={setTo} /></div>
 
       <div className="date-row">
-        <div className="form-group"><label>Departure Date</label><DatePicker selected={departure} onChange={setDeparture} /></div>
-        {tripType === "round-trip" && <div className="form-group"><label>Return Date</label><DatePicker selected={returnDate} onChange={setReturnDate} /></div>}
+        <div className="form-group"><label>Departure</label><DatePicker selected={departure} onChange={setDeparture} /></div>
+        {tripType === "round-trip" && (
+          <div className="form-group"><label>Return</label><DatePicker selected={returnDate} onChange={setReturnDate} /></div>
+        )}
       </div>
 
       <div className="form-group"><label>Passengers</label><input type="number" min={1} value={adults} onChange={(e) => setAdults(Number(e.target.value))} /></div>
 
       <button className="search-btn" onClick={handleSearch}>Find Flights</button>
+
+      {results.length > 0 && (
+        <div className="results-section">
+          {results.map((flight, i) => (
+            <div className="result-card" key={i}>
+              <h4>{flight.flightNumber}</h4>
+              <p>{flight.departure} → {flight.arrival}</p>
+              <p>{flight.date}</p>
+              <p className="price">{flight.price}</p>
+              <button onClick={() => addBooking({ type: "flight", ...flight })}>
+                Add to Itinerary
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
