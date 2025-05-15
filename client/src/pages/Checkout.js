@@ -1,13 +1,13 @@
 // File: client/src/pages/Checkout.js
 
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './Checkout.css';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "./Checkout.css";
 
 function Checkout() {
-  const [cardNumber, setCardNumber] = useState('');
-  const [expiryDate, setExpiryDate] = useState('');
-  const [cvv, setCvv] = useState('');
+  const [cardNumber, setCardNumber] = useState("");
+  const [expiryDate, setExpiryDate] = useState("");
+  const [cvv, setCvv] = useState("");
   const navigate = useNavigate();
 
   const handlePayment = () => {
@@ -16,17 +16,18 @@ function Checkout() {
       return;
     }
 
-    alert('Payment successful!');
+    alert("Payment successful!");
+
     const bookingDetails = {
-      id: '12345',
-      travelerName: 'John Doe',
-      flightNumber: 'FL123',
-      date: '2025-05-10',
-      departure: 'New York',
-      arrival: 'London'
+      id: "ORDER-" + Math.floor(Math.random() * 90000 + 10000),
+      travelerName: "John Doe",
+      flightNumber: "SKY789",
+      date: new Date().toDateString(),
+      departure: "New York",
+      arrival: "London",
     };
 
-    navigate('/confirmation', { state: { bookingDetails } });
+    navigate("/confirmation", { state: { bookingDetails } });
   };
 
   return (
