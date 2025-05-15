@@ -20,12 +20,10 @@ const CarRental = () => {
   useEffect(() => {
     const fetchCities = async () => {
       try {
-        const res = await axios.get("https://travelhub-1.onrender.com/api/hotel-cities", {
-          params: { keyword: "a" }
-        });
+        const res = await axios.get("https://travelhub-1.onrender.com/api/all-cities");
         const formatted = res.data.map(city => ({
           value: city.name,
-          label: `${city.name}, ${city.country}`
+          label: `${city.name}, ${city.country}`,
         }));
         setCityOptions(formatted);
       } catch (err) {
@@ -36,7 +34,7 @@ const CarRental = () => {
     fetchCities();
   }, []);
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     if (!city || !pickupDate || !returnDate || !driverAge) {
       alert("Please fill in all fields.");
       return;
@@ -47,7 +45,7 @@ const CarRental = () => {
         name: city.label,
         iataCode: "XYZ",
         pickup: pickupDate.toDateString(),
-        return: returnDate.toDateString()
+        return: returnDate.toDateString(),
       }
     ]);
   };
@@ -60,9 +58,9 @@ const CarRental = () => {
           city: city.label,
           pickup: pickupDate.toDateString(),
           return: returnDate.toDateString(),
-          driverAge
-        }
-      }
+          driverAge,
+        },
+      },
     });
   };
 
@@ -71,9 +69,8 @@ const CarRental = () => {
       <h2>Find Rental Cars</h2>
       <div className="form-group">
         <label>Pickup City</label>
-        <Select options={cityOptions} value={city} onChange={setCity} isSearchable />
+        <Select options={cityOptions} value={city} onChange={setCity} />
       </div>
-
       <div className="form-row">
         <div className="form-group">
           <label>Pickup Date</label>
@@ -84,7 +81,6 @@ const CarRental = () => {
           <DatePicker selected={returnDate} onChange={setReturnDate} />
         </div>
       </div>
-
       <div className="form-group">
         <label>Driver Age</label>
         <input
@@ -94,7 +90,6 @@ const CarRental = () => {
           onChange={(e) => setDriverAge(Number(e.target.value))}
         />
       </div>
-
       <button className="search-btn" onClick={handleSearch}>Search Cars</button>
 
       {locations.length > 0 && (
