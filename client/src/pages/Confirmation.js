@@ -1,22 +1,31 @@
 // File: client/src/pages/Confirmation.js
 
-import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import './Confirmation.css';
+import React from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import "./Confirmation.css";
 
 function Confirmation() {
   const { state } = useLocation();
   const booking = state?.bookingDetails || {};
   const navigate = useNavigate();
 
-  const handleAddAnother = () => navigate('/');
-  const handleCheckout = () => navigate('/checkout', { state: { bookingDetails: booking } });
+  const handleAddAnother = () => navigate("/");
+  const handleCheckout = () => {
+    if (Object.keys(booking).length === 0) {
+      alert("No booking to checkout.");
+      return;
+    }
+    navigate("/checkout", { state: { bookingDetails: booking } });
+  };
+
+  const noDetails = Object.keys(booking).length === 0;
 
   return (
     <div className="confirmation-page">
       <div className="confirmation-box">
         <h2>Booking Confirmation</h2>
-        {Object.keys(booking).length === 0 ? (
+
+        {noDetails ? (
           <p>No booking information available.</p>
         ) : (
           <div className="details">
@@ -55,8 +64,14 @@ function Confirmation() {
         )}
 
         <div className="button-group">
-          <button onClick={handleAddAnother} className="alt-btn">Add Another Reservation</button>
-          <button onClick={handleCheckout} className="confirm-btn">Proceed to Checkout</button>
+          <button onClick={handleAddAnother} className="alt-btn">
+            Add Another Reservation
+          </button>
+          {!noDetails && (
+            <button onClick={handleCheckout} className="confirm-btn">
+              Proceed to Checkout
+            </button>
+          )}
         </div>
       </div>
     </div>
