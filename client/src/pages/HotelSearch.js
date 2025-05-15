@@ -22,15 +22,11 @@ function HotelSearch() {
   useEffect(() => {
     const fetchCities = async () => {
       try {
-        const response = await axios.get("https://travelhub-1.onrender.com/api/hotel-cities", {
-          params: { keyword: "a" }
-        });
-
+        const response = await axios.get("https://travelhub-1.onrender.com/api/all-cities");
         const formatted = response.data.map(city => ({
           value: city.name,
           label: `${city.name}, ${city.country}`
         }));
-
         setOptions(formatted);
       } catch (err) {
         console.error("Error loading hotel cities:", err);
@@ -61,26 +57,11 @@ function HotelSearch() {
   return (
     <div className="hotel-search-container">
       <h2>Luxury Hotel Search</h2>
-      <div className="form-group">
-        <label>City</label>
-        <Select options={options} value={city} onChange={setCity} isSearchable />
-      </div>
-      <div className="form-group">
-        <label>Check-In Date</label>
-        <input type="date" value={checkIn} onChange={(e) => setCheckIn(e.target.value)} />
-      </div>
-      <div className="form-group">
-        <label>Check-Out Date</label>
-        <input type="date" value={checkOut} onChange={(e) => setCheckOut(e.target.value)} />
-      </div>
-      <div className="form-group">
-        <label>Guests</label>
-        <input type="number" min={1} value={adults} onChange={(e) => setAdults(Number(e.target.value))} />
-      </div>
-      <div className="form-group">
-        <label>Rooms</label>
-        <input type="number" min={1} value={rooms} onChange={(e) => setRooms(Number(e.target.value))} />
-      </div>
+      <div className="form-group"><label>City</label><Select options={options} value={city} onChange={setCity} /></div>
+      <div className="form-group"><label>Check-In Date</label><input type="date" value={checkIn} onChange={(e) => setCheckIn(e.target.value)} /></div>
+      <div className="form-group"><label>Check-Out Date</label><input type="date" value={checkOut} onChange={(e) => setCheckOut(e.target.value)} /></div>
+      <div className="form-group"><label>Guests</label><input type="number" min={1} value={adults} onChange={(e) => setAdults(Number(e.target.value))} /></div>
+      <div className="form-group"><label>Rooms</label><input type="number" min={1} value={rooms} onChange={(e) => setRooms(Number(e.target.value))} /></div>
       <button className="search-btn" onClick={handleSearch}>Search Hotels</button>
 
       {results.length > 0 && (
