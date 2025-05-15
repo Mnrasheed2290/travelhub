@@ -1,139 +1,88 @@
-// File: client/src/components/FlightSearch.js
-
-import React, { useState, useEffect, useContext } from "react";
-import Select from "react-select";
-import DatePicker from "react-datepicker";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { BookingContext } from "./BookingContext";
-import "react-datepicker/dist/react-datepicker.css";
-import "./FlightSearch.css";
+// ... (other imports, e.g., BookingContext, styling, etc.)
 
 function FlightSearch() {
-  const [tripType, setTripType] = useState("round-trip");
-  const [from, setFrom] = useState(null);
-  const [to, setTo] = useState(null);
-  const [departure, setDeparture] = useState(null);
-  const [returnDate, setReturnDate] = useState(null);
-  const [adults, setAdults] = useState(1);
-  const [cityOptions, setCityOptions] = useState([]);
-  const [results, setResults] = useState([]);
-
-  const { addBooking } = useContext(BookingContext);
   const navigate = useNavigate();
+  const [fromCity, setFromCity] = useState(null);    // selected origin
+  const [toCity, setToCity] = useState(null);        // selected destination
+  const [departureDate, setDepartureDate] = useState("");
+  const [returnDate, setReturnDate] = useState("");
+  const [cityOptions, setCityOptions] = useState([]); // suggestions list (city names)
 
-  useEffect(() => {
-    const fetchCities = async () => {
-      try {
-        const res = await axios.get("https://travelhub-1.onrender.com/api/all-cities");
-        const formatted = res.data.map(city => ({
-          value: city.name,
-          label: `${city.name}, ${city.country}`
-        }));
-        setCityOptions(formatted);
-      } catch (err) {
-        console.error("Flight cities fetch failed:", err.message);
-        alert("Could not load city options.");
-      }
-    };
-    fetchCities();
-  }, []);
-
-  const handleSearch = () => {
-    if (!from || !to || !departure || (tripType === "round-trip" && !returnDate)) {
-      alert("Please complete all fields.");
+  // Fetch city suggestions (same endpoint used as for hotels)
+  const fetchCities = async (keyword) => {
+    if (!keyword || keyword.length < 2) {
+      setCityOptions([]);
       return;
     }
+    try {
+      const response = await axios.get(`https://travelhub-1.onrender.com/api/hotel-cities?keyword=${encodeURIComponent(keyword)}`);
+      setCityOptions(response.data);
+    } catch (err) {
+      console.error("Error loading flight cities:", err);
+      alert("Unable to load cities. Please try again later.");
+    }
+  };
 
-    setResults([
-      {
-        flightNumber: "SKY789",
-        departure: from.label,
-        arrival: to.label,
-        date: departure.toDateString(),
-        price: "$480"
-      }
-    ]);
+  // Handlers for typing in origin/destination fields
+  const handleFromInput = (inputValue) => {
+    fetchCities(inputValue);
+  };
+  const handleToInput = (inputValue) => {
+    fetchCities(inputValue);
+  };
+
+  // ... (Rendering logic: two inputs or select components for From and To)
+  // For example, using datalist:
+  // <input type="text" list="cityOptions" value={fromCity ? fromCity.label : ""} onChange={e => handleFromInput(e.target.value)} placeholder="From city or airport" required />
+  // <input type="text" list="cityOptions" value={toCity ? toCity.label : ""} onChange={e => handleToInput(e.target.value)} placeholder="To city or airport" required />
+  // <datalist id="cityOptions">{cityOptions.map(opt => <option key={opt.value} value={opt.label} />)}</datalist>
+  //
+  // If using Select components:
+  // <Select options={cityOptions} value={fromCity} onChange={opt => setFromCity(opt)} onInputChange={(val, meta) => { if(meta.action === "input-change") handleFromInput(val); }} placeholder="From" />
+  // <Select options={cityOptions} value={toCity} onChange={opt => setToCity(opt)} onInputChange={(val, meta) => { if(meta.action === "input-change") handleToInput(val); }} placeholder="To" />
+
+  const handleSearchFlights = (e) => {
+    e.preventDefault();
+    if (!fromCity || !toCity) {
+      alert("Please select origin and destination cities.");
+      return;
+    }
+    // Save flight search criteria and navigate to results page
+    // e.g., BookingContext or state management
+    // navigate("/flight-results");
   };
 
   return (
-    <div className="flight-search-container">
-      <h2>Search Flights</h2>
+    <form className="flight-search-form" onSubmit={handleSearchFlights}>
+      {/* Origin and Destination inputs with suggestions (as described above) */}
+      <input 
+        type="text" 
+        list="cityOptions" 
+        value={fromCity ? fromCity.label : ""} 
+        onChange={(e) => handleFromInput(e.target.value)} 
+        placeholder="From (city)" 
+        required 
+      />
+      <input 
+        type="text" 
+        list="cityOptions" 
+        value={toCity ? toCity.label : ""} 
+        onChange={(e) => handleToInput(e.target.value)} 
+        placeholder="To (city)" 
+        required 
+      />
+      <datalist id="cityOptions">
+        {cityOptions.map(opt => (
+          <option key={opt.value} value={opt.label} />
+        ))}
+      </datalist>
 
-      <div className="trip-toggle">
-        <label>
-          <input
-            type="radio"
-            name="tripType"
-            value="round-trip"
-            checked={tripType === "round-trip"}
-            onChange={() => setTripType("round-trip")}
-          />
-          Round-trip
-        </label>
-        <label>
-          <input
-            type="radio"
-            name="tripType"
-            value="one-way"
-            checked={tripType === "one-way"}
-            onChange={() => setTripType("one-way")}
-          />
-          One-way
-        </label>
-      </div>
-
-      <div className="form-group">
-        <label>From</label>
-        <Select options={cityOptions} value={from} onChange={setFrom} isSearchable />
-      </div>
-
-      <div className="form-group">
-        <label>To</label>
-        <Select options={cityOptions} value={to} onChange={setTo} isSearchable />
-      </div>
-
-      <div className="date-row">
-        <div className="form-group">
-          <label>Departure</label>
-          <DatePicker selected={departure} onChange={setDeparture} />
-        </div>
-        {tripType === "round-trip" && (
-          <div className="form-group">
-            <label>Return</label>
-            <DatePicker selected={returnDate} onChange={setReturnDate} />
-          </div>
-        )}
-      </div>
-
-      <div className="form-group">
-        <label>Passengers</label>
-        <input
-          type="number"
-          min={1}
-          value={adults}
-          onChange={(e) => setAdults(Number(e.target.value))}
-        />
-      </div>
-
-      <button className="search-btn" onClick={handleSearch}>Find Flights</button>
-
-      {results.length > 0 && (
-        <div className="results-section">
-          {results.map((flight, i) => (
-            <div className="result-card" key={i}>
-              <h4>{flight.flightNumber}</h4>
-              <p>{flight.departure} → {flight.arrival}</p>
-              <p>{flight.date}</p>
-              <p className="price">{flight.price}</p>
-              <button onClick={() => addBooking({ type: "flight", ...flight })}>
-                Add to Itinerary
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
+      <input type="date" value={departureDate} onChange={e => setDepartureDate(e.target.value)} required />
+      <input type="date" value={returnDate} onChange={e => setReturnDate(e.target.value)} />
+      <button type="submit">Search Flights</button>
+    </form>
   );
 }
 
