@@ -31,22 +31,13 @@ const HomePage = () => {
 
       <div className="homepage-tabs">
         <div className="tab-buttons">
-          <button
-            className={tab === "hotels" ? "active" : ""}
-            onClick={() => setTab("hotels")}
-          >
+          <button className={tab === "hotels" ? "active" : ""} onClick={() => setTab("hotels")}>
             <FaHotel /> Hotels
           </button>
-          <button
-            className={tab === "flights" ? "active" : ""}
-            onClick={() => setTab("flights")}
-          >
+          <button className={tab === "flights" ? "active" : ""} onClick={() => setTab("flights")}>
             <FaPlane /> Flights
           </button>
-          <button
-            className={tab === "cars" ? "active" : ""}
-            onClick={() => setTab("cars")}
-          >
+          <button className={tab === "cars" ? "active" : ""} onClick={() => setTab("cars")}>
             <FaCar /> Cars
           </button>
         </div>
