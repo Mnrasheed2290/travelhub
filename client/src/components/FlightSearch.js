@@ -25,9 +25,7 @@ function FlightSearch() {
   useEffect(() => {
     const fetchCities = async () => {
       try {
-        const res = await axios.get("https://travelhub-1.onrender.com/api/hotel-cities", {
-          params: { keyword: "a" }
-        });
+        const res = await axios.get("https://travelhub-1.onrender.com/api/all-cities");
         const formatted = res.data.map(city => ({
           value: city.name,
           label: `${city.name}, ${city.country}`
