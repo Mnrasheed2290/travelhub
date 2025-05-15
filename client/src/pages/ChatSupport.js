@@ -1,66 +1,73 @@
 // File: client/src/pages/ChatSupport.js
 
-import React, { useEffect, useState, useRef } from "react";
-import { Client as TwilioChatClient } from "@twilio/conversations";
+import React, { useEffect, useState } from "react";
+import { Client as TwilioChat } from "twilio-chat";
 import "./ChatSupport.css";
 
 function ChatSupport() {
-  const [chatClient, setChatClient] = useState(null);
-  const [conversation, setConversation] = useState(null);
+  const [channel, setChannel] = useState(null);
+  const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState("");
-  const chatRef = useRef(null);
 
   useEffect(() => {
-    const initializeChat = async () => {
+    const initTwilioChat = async () => {
       try {
-        const response = await fetch("https://travelhub-1.onrender.com/api/twilio-token");
-        const { token, identity, serviceSid } = await response.json();
-
-        const client = await TwilioChatClient.create(token);
-        setChatClient(client);
+        const res = await fetch("https://travelhub-1.onrender.com/api/twilio-token");
+        const { token } = await res.json();
+        const client = await TwilioChat.create(token);
 
         client.on("tokenAboutToExpire", async () => {
-          const refresh = await fetch("https://travelhub-1.onrender.com/api/twilio-token");
-          const { token: newToken } = await refresh.json();
+          const refreshed = await fetch("https://travelhub-1.onrender.com/api/twilio-token");
+          const { token: newToken } = await refreshed.json();
           client.updateToken(newToken);
         });
 
-        const conversation = await client.getConversationBySid(serviceSid);
-        setConversation(conversation);
+        client.on("channelJoined", (joinedChannel) => {
+          setChannel(joinedChannel);
+          joinedChannel.getMessages().then((msgs) => {
+            const parsed = msgs.items.map((msg) => ({
+              sender: msg.author,
+              text: msg.body
+            }));
+            setMessages(parsed);
+          });
 
-        conversation.on("messageAdded", (message) => {
-          setMessages((prev) => [...prev, { author: message.author, body: message.body }]);
+          joinedChannel.on("messageAdded", (msg) => {
+            setMessages((prev) => [...prev, { sender: msg.author, text: msg.body }]);
+          });
         });
 
-        const history = await conversation.getMessages();
-        const loadedMessages = history.items.map(msg => ({ author: msg.author, body: msg.body }));
-        setMessages(loadedMessages);
+        let supportChannel;
+        try {
+          supportChannel = await client.getChannelByUniqueName("support");
+        } catch {
+          supportChannel = await client.createChannel({ uniqueName: "support", friendlyName: "Customer Support" });
+        }
+
+        await supportChannel.join().catch(() => {});
+        setChannel(supportChannel);
       } catch (err) {
-        console.error("Chat init error:", err);
-        alert("Failed to load chat. Please try again later.");
+        console.error("Twilio Chat error:", err);
       }
     };
 
-    initializeChat();
+    initTwilioChat();
   }, []);
 
-  const sendMessage = async () => {
-    if (!input.trim() || !conversation) return;
-    await conversation.sendMessage(input);
-    setInput("");
+  const handleSend = async () => {
+    if (!message.trim() || !channel) return;
+    await channel.sendMessage(message);
+    setMessages((prev) => [...prev, { sender: "You", text: message }]);
+    setMessage("");
   };
 
   return (
     <div className="chat-support">
-      <h2>Live Chat Support</h2>
-      <div className="chat-box" ref={chatRef}>
-        {messages.map((msg, idx) => (
-          <div
-            key={idx}
-            className={`chat-message ${msg.author === chatClient?.user.identity ? "user" : "support"}`}
-          >
-            <span><strong>{msg.author === chatClient?.user.identity ? "You" : "Support"}:</strong> {msg.body}</span>
+      <h2>Live Support</h2>
+      <div className="chat-box">
+        {messages.map((msg, index) => (
+          <div key={index} className={`chat-message ${msg.sender === "You" ? "user" : "support"}`}>
+            <strong>{msg.sender}:</strong> {msg.text}
           </div>
         ))}
       </div>
@@ -68,10 +75,10 @@ function ChatSupport() {
         <input
           type="text"
           placeholder="Type a message..."
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
         />
-        <button onClick={sendMessage}>Send</button>
+        <button onClick={handleSend}>Send</button>
       </div>
     </div>
   );
