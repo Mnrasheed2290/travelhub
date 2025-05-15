@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { BookingContext } from "../components/BookingContext";
+import axios from "axios";
+
 // (Assume any required styling or additional imports here, e.g., for a Select component)
 
 function HotelSearch() {
