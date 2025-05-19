@@ -1,54 +1,42 @@
-.hotel-search-card {
+.hotel-search-container {
+  max-width: 720px;
+  margin: 60px auto;
   background: #fff;
   padding: 32px;
-  margin: 60px auto;
-  max-width: 720px;
   border-radius: 18px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   font-family: 'Segoe UI', sans-serif;
 }
 
-.tab-header {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
+.hotel-search-container h2 {
+  text-align: center;
+  font-size: 1.8rem;
   margin-bottom: 24px;
-}
-
-.tab-header button {
-  border: none;
-  background: none;
-  font-size: 1rem;
-  font-weight: 600;
-  color: #666;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 18px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.tab-header .active,
-.tab-header button:hover {
-  background-color: #e6f0ff;
   color: #003366;
 }
 
-.tab-body .input-group {
+.form-group {
   margin-bottom: 20px;
+  max-width: 100%;
 }
 
-.tab-body .input-group label {
+.form-group label {
   font-weight: 600;
   display: block;
   margin-bottom: 8px;
   color: #333;
 }
 
-.tab-body input[type="date"],
-.tab-body input[type="number"] {
+.form-group .react-select__control {
+  max-width: 100%;
+}
+
+.react-select__container {
+  max-width: 100%;
+}
+
+input[type="date"],
+input[type="number"] {
   width: 100%;
   padding: 10px;
   font-size: 15px;
@@ -59,34 +47,12 @@
 .date-row {
   display: flex;
   gap: 20px;
+  flex-wrap: wrap;
 }
 
 .room-selectors {
   display: flex;
   gap: 12px;
-}
-
-.bundle-row {
-  background-color: #e6ffe6;
-  padding: 16px;
-  border-radius: 10px;
-  margin-bottom: 20px;
-  display: flex;
-  gap: 20px;
-  align-items: center;
-  font-weight: 500;
-}
-
-.bundle-row input {
-  margin-right: 6px;
-}
-
-.bundle-label {
-  color: #2d6a4f;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  gap: 8px;
 }
 
 .search-btn {
@@ -104,4 +70,20 @@
 
 .search-btn:hover {
   background-color: #005fa3;
+}
+
+.results-section {
+  margin-top: 30px;
+}
+
+.result-card {
+  background: #f7f9fc;
+  padding: 16px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.result-card h4 {
+  margin-bottom: 6px;
 }
