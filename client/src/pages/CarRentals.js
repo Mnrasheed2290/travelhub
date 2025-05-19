@@ -1,5 +1,3 @@
-// File: client/src/pages/CarRentals.js
-
 import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import DatePicker from "react-datepicker";
@@ -20,23 +18,23 @@ const CarRental = () => {
   useEffect(() => {
     const fetchCities = async () => {
       try {
-        const res = await axios.get("https://travelhub-1.onrender.com/api/all-cities");
+        const res = await axios.get("https://travelhub-1.onrender.com/api/locations?q=a");
         const formatted = res.data.map(city => ({
           value: city.name,
-          label: `${city.name}, ${city.country}`,
+          label: `${city.name}, ${city.country}`
         }));
         setCityOptions(formatted);
       } catch (err) {
         console.error("Error loading car rental cities:", err.message);
-        alert("Failed to load pickup cities.");
+        alert("Failed to load cities.");
       }
     };
     fetchCities();
   }, []);
 
-  const handleSearch = async () => {
+  const handleSearch = () => {
     if (!city || !pickupDate || !returnDate || !driverAge) {
-      alert("Please fill in all fields.");
+      alert("Please complete all fields.");
       return;
     }
 
@@ -45,7 +43,7 @@ const CarRental = () => {
         name: city.label,
         iataCode: "XYZ",
         pickup: pickupDate.toDateString(),
-        return: returnDate.toDateString(),
+        return: returnDate.toDateString()
       }
     ]);
   };
@@ -58,9 +56,9 @@ const CarRental = () => {
           city: city.label,
           pickup: pickupDate.toDateString(),
           return: returnDate.toDateString(),
-          driverAge,
-        },
-      },
+          driverAge
+        }
+      }
     });
   };
 
@@ -69,7 +67,7 @@ const CarRental = () => {
       <h2>Find Rental Cars</h2>
       <div className="form-group">
         <label>Pickup City</label>
-        <Select options={cityOptions} value={city} onChange={setCity} />
+        <Select options={cityOptions} value={city} onChange={setCity} isSearchable />
       </div>
       <div className="form-row">
         <div className="form-group">
@@ -83,12 +81,7 @@ const CarRental = () => {
       </div>
       <div className="form-group">
         <label>Driver Age</label>
-        <input
-          type="number"
-          min="18"
-          value={driverAge}
-          onChange={(e) => setDriverAge(Number(e.target.value))}
-        />
+        <input type="number" min="18" value={driverAge} onChange={(e) => setDriverAge(Number(e.target.value))} />
       </div>
       <button className="search-btn" onClick={handleSearch}>Search Cars</button>
 
