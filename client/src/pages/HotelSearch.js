@@ -1,121 +1,86 @@
-import React, { useState, useEffect } from "react";
+// File: client/src/pages/HotelSearch.js
+import React, { useState, useEffect, useContext } from "react";
+import Select from "react-select";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { BookingContext } from "../components/BookingContext";
-import axios from "axios";
-
-// (Assume any required styling or additional imports here, e.g., for a Select component)
+import "./HotelSearch.css";
 
 function HotelSearch() {
-  const navigate = useNavigate();
-  const [city, setCity] = useState(null);         // selected city (object with value/label)
+  const [city, setCity] = useState(null);
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
-  const [options, setOptions] = useState([]);     // city suggestion options for dropdown
+  const [adults, setAdults] = useState(2);
+  const [rooms, setRooms] = useState(1);
+  const [options, setOptions] = useState([]);
+  const [results, setResults] = useState([]);
 
-  // Fetch city suggestions from backend for a given input (keyword)
-  const fetchCities = async (keyword) => {
-    if (!keyword || keyword.length < 1) {
-      setOptions([]);  // no input, clear suggestions
+  const { addBooking } = useContext(BookingContext);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchCities = async () => {
+      try {
+        const res = await axios.get("https://travelhub-1.onrender.com/api/locations?q=a");
+        const formatted = res.data.map(city => ({
+          value: city.name,
+          label: `${city.name}, ${city.country}`,
+        }));
+        setOptions(formatted);
+      } catch (err) {
+        console.error("Hotel city fetch failed:", err.message);
+        alert("Error loading cities.");
+      }
+    };
+    fetchCities();
+  }, []);
+
+  const handleSearch = () => {
+    if (!city || !checkIn || !checkOut) {
+      alert("Please fill all fields");
       return;
     }
-    try {
-      // Call our backend proxy to get city suggestions (already filtered and formatted)
-      const response = await axios.get(`https://travelhub-1.onrender.com/api/hotel-cities?keyword=${encodeURIComponent(keyword)}`);
-      const cityOptions = response.data;  // array of { value, label } objects
-      setOptions(cityOptions);
-    } catch (err) {
-      console.error("Error loading city suggestions:", err);
-      alert("Error loading cities.");
-    }
-  };
 
-  // Handle user typing in the city input (for live suggestions)
-  const handleCityInputChange = (inputValue) => {
-    // Optionally require a minimum length to avoid too-broad searches:
-    if (inputValue.length < 2) {
-      setOptions([]);
-      return;
-    }
-    fetchCities(inputValue);
-  };
-
-  // If using a third-party Select component for autocomplete:
-  // <Select 
-  //    options={options} 
-  //    value={city} 
-  //    onChange={(option) => setCity(option)} 
-  //    onInputChange={(val, { action }) => { if (action === "input-change") handleCityInputChange(val); }}
-  //    placeholder="Enter city" 
-  // />
-  //
-  // If using a regular input with datalist for suggestions:
-  // <input 
-  //   type="text" 
-  //   list="cityOptions" 
-  //   value={city ? city.label : ""} 
-  //   onChange={e => handleCityInputChange(e.target.value)} 
-  //   onBlur={...} onFocus={...} placeholder="Enter city" 
-  // />
-  // <datalist id="cityOptions">
-  //   {options.map(opt => <option key={opt.value} value={opt.label} />)}
-  // </datalist>
-  //
-  // (The exact rendering depends on the UI library or approach chosen for autocomplete dropdown)
-
-  // ... (Other form inputs for check-in/check-out dates and submit button, not shown) ...
-
-  // Handle form submission (search for hotels in selected city and date range)
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    if (!city) {
-      alert("Please select a city.");
-      return;
-    }
-    // Save search criteria in context or navigate to results page
-    // (BookingContext could be used to store the search parameters globally)
-    // Example:
-    // setBookingContext({ city: city.value, checkIn, checkOut });
-    // navigate("/hotel-results");
+    setResults([
+      {
+        hotelName: "SkyNest Royal Suites",
+        city: city.label,
+        checkIn,
+        checkOut,
+        price: "$620",
+        adults,
+        rooms,
+      },
+    ]);
   };
 
   return (
-    <form className="hotel-search-form" onSubmit={handleSearch}>
-      {/* City input with suggestions */}
-      {/* (Use either a Select component or an input + datalist as described above) */}
-      {/* Example using react-select: */}
-      {/* 
-      <Select 
-        className="city-select"
-        options={options}
-        value={city}
-        onChange={(option) => setCity(option)}
-        onInputChange={(val, actionMeta) => {
-          if (actionMeta.action === "input-change") handleCityInputChange(val);
-        }}
-        placeholder="Destination city"
-      /> 
-      */}
-      
-      {/* Example using input+datalist: */}
-      <input 
-        type="text"
-        list="cityOptions"
-        value={city ? city.label : ""} 
-        onChange={(e) => handleCityInputChange(e.target.value)}
-        placeholder="Destination city"
-        required 
-      />
-      <datalist id="cityOptions">
-        {options.map(opt => (
-          <option key={opt.value} value={opt.label} />
-        ))}
-      </datalist>
+    <div className="hotel-search-container">
+      <h2>Luxury Hotel Search</h2>
+      <div className="form-group"><label>Destination city</label><Select options={options} value={city} onChange={setCity} /></div>
+      <div className="form-group"><label>Check-In Date</label><input type="date" value={checkIn} onChange={(e) => setCheckIn(e.target.value)} /></div>
+      <div className="form-group"><label>Check-Out Date</label><input type="date" value={checkOut} onChange={(e) => setCheckOut(e.target.value)} /></div>
+      <div className="form-group"><label>Guests</label><input type="number" min={1} value={adults} onChange={(e) => setAdults(Number(e.target.value))} /></div>
+      <div className="form-group"><label>Rooms</label><input type="number" min={1} value={rooms} onChange={(e) => setRooms(Number(e.target.value))} /></div>
+      <button className="search-btn" onClick={handleSearch}>Search Hotels</button>
 
-      {/* Date inputs and Search button (not fully shown for brevity) */}
-      <input type="date" value={checkIn} onChange={e => setCheckIn(e.target.value)} required />
-      <input type="date" value={checkOut} onChange={e => setCheckOut(e.target.value)} required />
-      <button type="submit">Search Hotels</button>
-    </form>
+      {results.length > 0 && (
+        <div className="results-section">
+          {results.map((hotel, i) => (
+            <div className="result-card" key={i}>
+              <h4>{hotel.hotelName}</h4>
+              <p>{hotel.city}</p>
+              <p>{hotel.checkIn} → {hotel.checkOut}</p>
+              <p>{hotel.rooms} room(s), {hotel.adults} guest(s)</p>
+              <p className="price">{hotel.price}</p>
+              <button onClick={() => addBooking({ type: "hotel", ...hotel })}>
+                Add to Itinerary
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
 
