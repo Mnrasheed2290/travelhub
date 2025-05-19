@@ -29,6 +29,19 @@
 
 .form-group {
   margin-bottom: 20px;
+  max-width: 100%;
+}
+
+.form-group .react-select__control {
+  max-width: 100%;
+}
+
+input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
 }
 
 .date-row {
@@ -53,3 +66,11 @@
 .search-btn:hover {
   background-color: #005fa3;
 }
+
+.results-section {
+  margin-top: 30px;
+}
+
+.result-card {
+  background: #f4f7fc;
+  border-radius:
