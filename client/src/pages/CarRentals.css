@@ -17,20 +17,38 @@
 
 .form-group {
   margin-bottom: 20px;
+  max-width: 100%;
+}
+
+.form-group label {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.form-group .react-select__control {
+  max-width: 100%;
+}
+
+.react-select__container {
+  max-width: 100%;
+}
+
+input[type="number"],
+input[type="text"],
+input[type="date"] {
+  width: 100%;
+  padding: 10px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
 }
 
 .form-row {
   display: flex;
   gap: 20px;
   flex-wrap: wrap;
-}
-
-input[type="number"] {
-  width: 100%;
-  padding: 10px;
-  font-size: 15px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
 }
 
 .search-btn {
@@ -66,8 +84,25 @@ input[type="number"] {
 }
 
 .results-section li {
-  padding: 10px;
-  background: #f4f4f4;
-  margin-bottom: 8px;
-  border-radius: 6px;
+  padding: 12px;
+  background: #f4f7fc;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.book-btn {
+  margin-top: 10px;
+  background-color: #2b9348;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.book-btn:hover {
+  background-color: #1f7836;
 }
