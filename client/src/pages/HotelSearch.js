@@ -1,4 +1,3 @@
-// File: client/src/pages/HotelSearch.js
 import React, { useState, useEffect, useContext } from "react";
 import Select from "react-select";
 import axios from "axios";
@@ -21,7 +20,9 @@ function HotelSearch() {
   useEffect(() => {
     const fetchCities = async () => {
       try {
-        const res = await axios.get("https://travelhub-1.onrender.com/api/locations?q=a");
+        const res = await axios.get("https://travelhub-1.onrender.com/api/hotel-cities", {
+          params: { keyword: "a" }
+        });
         const formatted = res.data.map(city => ({
           value: city.name,
           label: `${city.name}, ${city.country}`,
