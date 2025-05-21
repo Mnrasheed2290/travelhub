@@ -1,3 +1,5 @@
+// File: client/src/pages/HotelSearch.js
+
 import React, { useState, useEffect, useContext } from "react";
 import Select from "react-select";
 import axios from "axios";
@@ -20,12 +22,10 @@ function HotelSearch() {
   useEffect(() => {
     const fetchCities = async () => {
       try {
-        const res = await axios.get("https://travelhub-1.onrender.com/api/hotel-cities", {
-          params: { keyword: "a" }
-        });
+        const res = await axios.get("https://travelhub-1.onrender.com/api/locations?q=a");
         const formatted = res.data.map(city => ({
-          value: city.name,
-          label: `${city.name}, ${city.country}`,
+          value: city.iataCode,
+          label: `${city.name}, ${city.country}`
         }));
         setOptions(formatted);
       } catch (err) {
@@ -50,19 +50,34 @@ function HotelSearch() {
         checkOut,
         price: "$620",
         adults,
-        rooms,
-      },
+        rooms
+      }
     ]);
   };
 
   return (
     <div className="hotel-search-container">
       <h2>Luxury Hotel Search</h2>
-      <div className="form-group"><label>Destination city</label><Select options={options} value={city} onChange={setCity} /></div>
-      <div className="form-group"><label>Check-In Date</label><input type="date" value={checkIn} onChange={(e) => setCheckIn(e.target.value)} /></div>
-      <div className="form-group"><label>Check-Out Date</label><input type="date" value={checkOut} onChange={(e) => setCheckOut(e.target.value)} /></div>
-      <div className="form-group"><label>Guests</label><input type="number" min={1} value={adults} onChange={(e) => setAdults(Number(e.target.value))} /></div>
-      <div className="form-group"><label>Rooms</label><input type="number" min={1} value={rooms} onChange={(e) => setRooms(Number(e.target.value))} /></div>
+      <div className="form-group">
+        <label>Destination city</label>
+        <Select options={options} value={city} onChange={setCity} isSearchable />
+      </div>
+      <div className="form-group">
+        <label>Check-In Date</label>
+        <input type="date" value={checkIn} onChange={(e) => setCheckIn(e.target.value)} />
+      </div>
+      <div className="form-group">
+        <label>Check-Out Date</label>
+        <input type="date" value={checkOut} onChange={(e) => setCheckOut(e.target.value)} />
+      </div>
+      <div className="form-group">
+        <label>Guests</label>
+        <input type="number" min={1} value={adults} onChange={(e) => setAdults(Number(e.target.value))} />
+      </div>
+      <div className="form-group">
+        <label>Rooms</label>
+        <input type="number" min={1} value={rooms} onChange={(e) => setRooms(Number(e.target.value))} />
+      </div>
       <button className="search-btn" onClick={handleSearch}>Search Hotels</button>
 
       {results.length > 0 && (
