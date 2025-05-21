@@ -1,3 +1,5 @@
+// File: client/src/components/FlightSearch.js
+
 import React, { useState, useEffect, useContext } from "react";
 import Select from "react-select";
 import DatePicker from "react-datepicker";
@@ -23,12 +25,10 @@ function FlightSearch() {
   useEffect(() => {
     const fetchCities = async () => {
       try {
-        const res = await axios.get("https://travelhub-1.onrender.com/api/hotel-cities", {
-          params: { keyword: "a" }
-        });
+        const res = await axios.get("https://travelhub-1.onrender.com/api/locations?q=a");
         const formatted = res.data.map(city => ({
-          value: city.name,
-          label: `${city.name}, ${city.country}`,
+          value: city.iataCode,
+          label: `${city.name}, ${city.country}`
         }));
         setCityOptions(formatted);
       } catch (err) {
@@ -52,7 +52,7 @@ function FlightSearch() {
         arrival: to.label,
         date: departure.toDateString(),
         return: tripType === "round-trip" ? returnDate.toDateString() : null,
-        price: "$480",
+        price: "$480"
       }
     ]);
   };
