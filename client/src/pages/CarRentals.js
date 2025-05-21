@@ -1,3 +1,5 @@
+// File: client/src/pages/CarRentals.js
+
 import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import DatePicker from "react-datepicker";
@@ -20,7 +22,7 @@ const CarRental = () => {
       try {
         const res = await axios.get("https://travelhub-1.onrender.com/api/locations?q=a");
         const formatted = res.data.map(city => ({
-          value: city.name,
+          value: city.iataCode,
           label: `${city.name}, ${city.country}`
         }));
         setCityOptions(formatted);
@@ -41,7 +43,7 @@ const CarRental = () => {
     setLocations([
       {
         name: city.label,
-        iataCode: "XYZ",
+        iataCode: city.value,
         pickup: pickupDate.toDateString(),
         return: returnDate.toDateString()
       }
