@@ -20,9 +20,10 @@ const CarRental = () => {
 
   useEffect(() => {
     const fetchCities = async () => {
-      if (searchTerm.length < 2) return;
+      const trimmed = searchTerm.trim();
+      if (trimmed.length < 2) return;
       try {
-        const res = await axios.get(`https://travelhub-1.onrender.com/api/locations?q=${searchTerm}`);
+        const res = await axios.get(`https://travelhub-1.onrender.com/api/locations?q=${encodeURIComponent(trimmed)}`);
         const formatted = res.data.map(city => ({
           value: city.iataCode,
           label: `${city.name}, ${city.country}`
@@ -42,20 +43,26 @@ const CarRental = () => {
     }
   }, []);
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     if (!city || !pickupDate || !returnDate || !driverAge) {
       alert("Please complete all fields.");
       return;
     }
 
-    setLocations([
-      {
-        name: city.label,
-        iataCode: city.value,
-        pickup: pickupDate.toDateString(),
-        return: returnDate.toDateString()
-      }
-    ]);
+    try {
+      const payload = {
+        locationCode: city.value,
+        pickupDate: pickupDate.toISOString().split("T")[0],
+        returnDate: returnDate.toISOString().split("T")[0],
+        driverAge
+      };
+
+      const res = await axios.post("https://travelhub-1.onrender.com/api/car-rentals", payload);
+      setLocations(res.data.data || []);
+    } catch (err) {
+      console.error("Car rental search failed:", err.message);
+      alert("Failed to fetch car rentals. Please try again.");
+    }
   };
 
   const handleBook = (loc) => {
@@ -113,11 +120,11 @@ const CarRental = () => {
 
       {locations.length > 0 && (
         <div className="results-section">
-          <h3>Available Locations</h3>
+          <h3>Available Cars</h3>
           <ul>
             {locations.map((loc, index) => (
               <li key={index}>
-                <strong>{loc.name}</strong> — {loc.iataCode}
+                <strong>{loc.vehicle?.make} {loc.vehicle?.model}</strong> — {loc.estimatedTotal?.amount} {loc.estimatedTotal?.currency}
                 <button className="book-btn" onClick={() => handleBook(loc)}>Book This Car</button>
               </li>
             ))}
