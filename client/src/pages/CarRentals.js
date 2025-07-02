@@ -15,14 +15,14 @@ const CarRental = () => {
   const [driverAge, setDriverAge] = useState(25);
   const [cityOptions, setCityOptions] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [results, setResults] = useState([]);
+  const [locations, setLocations] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCities = async () => {
       if (searchTerm.length < 2) return;
       try {
-        const res = await axios.get(`https://travelhub-1.onrender.com/api/locations?q=${encodeURIComponent(searchTerm)}`);
+        const res = await axios.get(`https://travelhub-1.onrender.com/api/locations?q=${searchTerm}`);
         const formatted = res.data.map(city => ({
           value: city.iataCode,
           label: `${city.name}, ${city.country}`
@@ -49,26 +49,25 @@ const CarRental = () => {
     }
 
     try {
-      const payload = {
+      const res = await axios.post("https://travelhub-1.onrender.com/api/car-rentals", {
         locationCode: city.value,
-        pickupDate: pickupDate.toISOString().split("T")[0],
-        returnDate: returnDate.toISOString().split("T")[0],
+        pickupDate: pickupDate.toISOString(),
+        returnDate: returnDate.toISOString(),
         driverAge
-      };
+      });
 
-      const res = await axios.post("https://travelhub-1.onrender.com/api/car-rentals", payload);
-      setResults(res.data.data || []);
+      setLocations(res.data.data || []);
     } catch (err) {
       console.error("Car rental search failed:", err.message);
-      alert("Failed to fetch car rental results. Please try again.");
+      alert("Failed to fetch car rentals. Please try again.");
     }
   };
 
-  const handleBook = (car) => {
+  const handleBook = (loc) => {
     navigate("/confirmation", {
       state: {
         bookingDetails: {
-          rentalLocation: city.label,
+          rentalLocation: loc.name || city.label,
           city: city.label,
           pickup: pickupDate.toDateString(),
           return: returnDate.toDateString(),
@@ -117,15 +116,14 @@ const CarRental = () => {
 
       <button className="search-btn" onClick={handleSearch}>Search Cars</button>
 
-      {results.length > 0 && (
+      {locations.length > 0 && (
         <div className="results-section">
-          <h3>Available Cars</h3>
+          <h3>Available Rentals</h3>
           <ul>
-            {results.map((car, index) => (
+            {locations.map((loc, index) => (
               <li key={index}>
-                <strong>{car.vehicle?.name || "Car Option"}</strong>
-                <p>{car.estimatedTotal?.amount} {car.estimatedTotal?.currency}</p>
-                <button className="book-btn" onClick={() => handleBook(car)}>Book This Car</button>
+                <strong>{loc.vehicle?.brand} {loc.vehicle?.model}</strong> — {loc.estimatedTotal?.amount} {loc.estimatedTotal?.currency}
+                <button className="book-btn" onClick={() => handleBook(loc)}>Book This Car</button>
               </li>
             ))}
           </ul>
