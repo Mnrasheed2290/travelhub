@@ -1,6 +1,6 @@
 // File: client/src/components/FlightSearch.js
 
-import React, { useState, useContext, useEffect, useCallback } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import Select from "react-select";
 import DatePicker from "react-datepicker";
 import { useNavigate } from "react-router-dom";
@@ -16,37 +16,58 @@ function FlightSearch() {
   const [departure, setDeparture] = useState(null);
   const [returnDate, setReturnDate] = useState(null);
   const [adults, setAdults] = useState(1);
-  const [cityOptions, setCityOptions] = useState([]);
+  const [fromOptions, setFromOptions] = useState([]);
+  const [toOptions, setToOptions] = useState([]);
+  const [fromInput, setFromInput] = useState("");
+  const [toInput, setToInput] = useState("");
   const [results, setResults] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
 
   const { addBooking } = useContext(BookingContext);
   const navigate = useNavigate();
 
-  // Fetch cities when user types
   useEffect(() => {
-    const fetchCities = async () => {
-      if (searchTerm.length < 2) return;
+    const fetchCities = async (query, setOptions) => {
+      if (query.length < 2) {
+        setOptions([]);
+        return;
+      }
       try {
-        const res = await axios.get(`https://travelhub-1.onrender.com/api/locations?q=${searchTerm}`);
+        const res = await axios.get(`https://travelhub-1.onrender.com/api/locations?q=${query}`);
         const formatted = res.data.map(city => ({
           value: city.iataCode,
           label: `${city.name}, ${city.country}`
         }));
-        setCityOptions(formatted);
+        setOptions(formatted);
       } catch (err) {
-        console.error("Flight city fetch failed:", err.message);
-        setCityOptions([]);
+        console.error("City fetch failed:", err.message);
+        setOptions([]);
       }
     };
-    fetchCities();
-  }, [searchTerm]);
 
-  const handleInputChange = useCallback((inputValue, { action }) => {
-    if (action === "input-change") {
-      setSearchTerm(inputValue);
-    }
-  }, []);
+    fetchCities(fromInput, setFromOptions);
+  }, [fromInput]);
+
+  useEffect(() => {
+    const fetchCities = async (query, setOptions) => {
+      if (query.length < 2) {
+        setOptions([]);
+        return;
+      }
+      try {
+        const res = await axios.get(`https://travelhub-1.onrender.com/api/locations?q=${query}`);
+        const formatted = res.data.map(city => ({
+          value: city.iataCode,
+          label: `${city.name}, ${city.country}`
+        }));
+        setOptions(formatted);
+      } catch (err) {
+        console.error("City fetch failed:", err.message);
+        setOptions([]);
+      }
+    };
+
+    fetchCities(toInput, setToOptions);
+  }, [toInput]);
 
   const handleSearch = () => {
     if (!from || !to || !departure || (tripType === "round-trip" && !returnDate)) {
@@ -96,24 +117,24 @@ function FlightSearch() {
       <div className="form-group">
         <label>From</label>
         <Select
-          options={cityOptions}
+          options={fromOptions}
           value={from}
           onChange={setFrom}
-          onInputChange={handleInputChange}
+          onInputChange={(value) => setFromInput(value)}
           isSearchable
-          placeholder="Type city..."
+          placeholder="Type departure city..."
         />
       </div>
 
       <div className="form-group">
         <label>To</label>
         <Select
-          options={cityOptions}
+          options={toOptions}
           value={to}
           onChange={setTo}
-          onInputChange={handleInputChange}
+          onInputChange={(value) => setToInput(value)}
           isSearchable
-          placeholder="Type city..."
+          placeholder="Type destination city..."
         />
       </div>
 
