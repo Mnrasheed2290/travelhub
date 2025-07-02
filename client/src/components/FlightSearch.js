@@ -1,4 +1,5 @@
-// Corrected: client/src/components/FlightSearch.js
+// File: client/src/components/FlightSearch.js
+
 import React, { useState, useContext, useEffect } from "react";
 import Select from "react-select";
 import DatePicker from "react-datepicker";
@@ -24,10 +25,11 @@ function FlightSearch() {
   const { addBooking } = useContext(BookingContext);
   const navigate = useNavigate();
 
+  // === Fetch cities ===
   const fetchCities = async (query, setOptions) => {
     if (query.length < 2) return;
     try {
-      const res = await axios.get(`/api/locations?q=${query}`);
+      const res = await axios.get(`/api/locations?q=${encodeURIComponent(query)}`);
       const formatted = res.data.map(city => ({
         value: city.iataCode,
         label: `${city.name}, ${city.country}`
@@ -35,12 +37,14 @@ function FlightSearch() {
       setOptions(formatted);
     } catch (err) {
       console.error("City fetch failed:", err.message);
+      setOptions([]);
     }
   };
 
   useEffect(() => { fetchCities(fromInput, setFromOptions); }, [fromInput]);
   useEffect(() => { fetchCities(toInput, setToOptions); }, [toInput]);
 
+  // === Search flights ===
   const handleSearch = async () => {
     if (!from || !to || !departure || (tripType === "round-trip" && !returnDate)) {
       alert("Please complete all fields.");
@@ -58,13 +62,14 @@ function FlightSearch() {
       setResults(res.data.data || []);
     } catch (err) {
       console.error("Flight search failed:", err.message);
-      alert("Flight search failed. Check console for details.");
+      alert("Flight search failed. Please try again.");
     }
   };
 
   return (
     <div className="flight-search-container">
       <h2>Search Flights</h2>
+
       <div className="trip-toggle">
         <label>
           <input type="radio" value="round-trip" checked={tripType === "round-trip"} onChange={() => setTripType("round-trip")} /> Round-trip
@@ -76,11 +81,24 @@ function FlightSearch() {
 
       <div className="form-group">
         <label>From</label>
-        <Select options={fromOptions} value={from} onChange={setFrom} onInputChange={setFromInput} placeholder="Type departure city..." />
+        <Select
+          options={fromOptions}
+          value={from}
+          onChange={setFrom}
+          onInputChange={setFromInput}
+          placeholder="Type departure city..."
+        />
       </div>
+
       <div className="form-group">
         <label>To</label>
-        <Select options={toOptions} value={to} onChange={setTo} onInputChange={setToInput} placeholder="Type destination city..." />
+        <Select
+          options={toOptions}
+          value={to}
+          onChange={setTo}
+          onInputChange={setToInput}
+          placeholder="Type destination city..."
+        />
       </div>
 
       <div className="date-row">
@@ -107,9 +125,9 @@ function FlightSearch() {
         <div className="results-section">
           {results.map((flight, i) => (
             <div className="result-card" key={i}>
-              <h4>{flight.itineraries?.[0]?.segments[0]?.carrierCode} {flight.itineraries?.[0]?.segments[0]?.number}</h4>
+              <h4>{flight.itineraries?.[0]?.segments[0]?.carrierCode} Flight</h4>
               <p>{from.label} → {to.label}</p>
-              <p>{departure.toDateString()}</p>
+              <p>Departure: {departure.toDateString()}</p>
               {tripType === "round-trip" && <p>Return: {returnDate.toDateString()}</p>}
               <p className="price">${flight.price?.total} {flight.price?.currency}</p>
               <button onClick={() => addBooking({ type: "flight", ...flight })}>Add to Itinerary</button>
