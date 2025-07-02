@@ -71,8 +71,8 @@ function FlightSearch() {
       const res = await axios.post("https://travelhub-1.onrender.com/api/flight-search", payload);
       setResults(res.data.data || []);
     } catch (err) {
-      console.error("Flight search failed:", err.message);
-      alert("Failed to fetch flight results. Please try again.");
+      console.error("Flight search failed:", err.response?.data || err.message);
+      alert(`Error: ${err.response?.data?.errors?.[0]?.detail || "Failed to fetch flight results. Please try again."}`);
     }
   };
 
