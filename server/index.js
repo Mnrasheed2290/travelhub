@@ -14,7 +14,7 @@ app.use(express.json());
 const AMADEUS_CLIENT_ID = process.env.AMADEUS_API_KEY;
 const AMADEUS_CLIENT_SECRET = process.env.AMADEUS_API_SECRET;
 
-// === Token Caching ===
+// === Token Caching Logic ===
 let cachedToken = null;
 let tokenExpiresAt = null;
 
@@ -36,42 +36,35 @@ const getAmadeusToken = async () => {
   );
 
   cachedToken = response.data.access_token;
-  tokenExpiresAt = new Date(Date.now() + 29 * 60 * 1000); // Cache for 29 mins
+  tokenExpiresAt = new Date(Date.now() + 29 * 60 * 1000); // Expires in 29 minutes
 
   return cachedToken;
 };
 
-// === /api/locations endpoint with pagination + Israel filter ===
+// === /api/locations endpoint with pagination & filtering ===
 app.get("/api/locations", async (req, res) => {
-  const keyword = req.query.q || "a";
+  const keyword = req.query.q || "";
+
+  if (keyword.length < 2) {
+    return res.json([]); // Return nothing for short inputs
+  }
+
   try {
     const token = await getAmadeusToken();
     let allResults = [];
-    let offset = 0;
-    const limit = 20;
-    let hasMore = true;
 
-    while (hasMore) {
-      const response = await axios.get("https://test.api.amadeus.com/v1/reference-data/locations", {
-        headers: { Authorization: `Bearer ${token}` },
-        params: {
-          keyword,
-          subType: "CITY,AIRPORT",
-          "page[limit]": limit,
-          "page[offset]": offset
-        }
+    let nextUrl = `https://test.api.amadeus.com/v1/reference-data/locations?keyword=${encodeURIComponent(keyword)}&subType=CITY,AIRPORT`;
+
+    while (nextUrl) {
+      const response = await axios.get(nextUrl, {
+        headers: { Authorization: `Bearer ${token}` }
       });
 
-      const results = response.data.data;
-      allResults.push(...results);
-
-      // Check if there's another page
-      const nextLink = response.data.meta?.links?.next;
-      hasMore = !!nextLink;
-      offset += limit;
+      allResults.push(...response.data.data);
+      nextUrl = response.data.meta?.links?.next || null;
     }
 
-    // Filter out cities from Israel
+    // Exclude Israeli cities
     const filtered = allResults.filter(
       (city) =>
         city.address?.countryCode !== "IL" &&
@@ -91,7 +84,7 @@ app.get("/api/locations", async (req, res) => {
   }
 });
 
-// === Start Server ===
+// === Start the Server ===
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Proxy server running on port ${PORT}`);
