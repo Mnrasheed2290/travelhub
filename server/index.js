@@ -10,7 +10,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// === Load Amadeus Flight Location Credentials ===
+// === Load Amadeus Flight API Credentials ===
 const AMADEUS_CLIENT_ID = process.env.flightAMADEUS_API_KEY;
 const AMADEUS_CLIENT_SECRET = process.env.flightAMADEUS_API_SECRET;
 
@@ -45,12 +45,12 @@ const getAmadeusToken = async () => {
   return cachedToken;
 };
 
-// === /api/locations endpoint with keyword search and filtering ===
+// === /api/locations endpoint ===
 app.get("/api/locations", async (req, res) => {
   const keyword = (req.query.q || "").trim();
 
   if (keyword.length < 2) {
-    return res.json([]); // Prevent unnecessary queries
+    return res.json([]);
   }
 
   try {
@@ -68,7 +68,6 @@ app.get("/api/locations", async (req, res) => {
       nextUrl = response.data.meta?.links?.next || null;
     }
 
-    // Exclude cities in Israel
     const filtered = allResults.filter(
       (city) =>
         city.address?.countryCode !== "IL" &&
@@ -85,6 +84,44 @@ app.get("/api/locations", async (req, res) => {
   } catch (error) {
     console.error("❌ Location fetch error:", error.response?.data || error.message);
     res.status(500).json({ error: "Failed to fetch cities" });
+  }
+});
+
+// === /api/flight-search for real-time offers ===
+app.post("/api/flight-search", async (req, res) => {
+  const { origin, destination, departureDate, returnDate, adults } = req.body;
+
+  if (!origin || !destination || !departureDate || !adults) {
+    return res.status(400).json({ error: "Missing required flight search parameters." });
+  }
+
+  try {
+    const token = await getAmadeusToken();
+
+    const searchPayload = {
+      currencyCode: "USD",
+      originLocationCode: origin,
+      destinationLocationCode: destination,
+      departureDate,
+      adults,
+      ...(returnDate ? { returnDate } : {})
+    };
+
+    const response = await axios.post(
+      "https://test.api.amadeus.com/v2/shopping/flight-offers",
+      searchPayload,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      }
+    );
+
+    res.json(response.data);
+  } catch (error) {
+    console.error("❌ Flight search error:", error.response?.data || error.message);
+    res.status(500).json({ error: "Failed to fetch flight offers" });
   }
 });
 
