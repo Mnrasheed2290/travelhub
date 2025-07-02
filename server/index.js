@@ -11,11 +11,18 @@ app.use(cors());
 app.use(express.json());
 
 // === Load Amadeus Credentials from Environment ===
-const AMADEUS_CLIENT_ID = process.env.hotelsearchAMADEUS_API_KEY;
-const AMADEUS_CLIENT_SECRET = process.env.hotelsearchAMADEUS_API_SECRET;
+const AMADEUS_CLIENT_ID = process.env.AMADEUS_API_KEY;
+const AMADEUS_CLIENT_SECRET = process.env.AMADEUS_API_SECRET;
 
-// === Function to Get Access Token ===
+// === Token Caching ===
+let cachedToken = null;
+let tokenExpiresAt = null;
+
 const getAmadeusToken = async () => {
+  if (cachedToken && tokenExpiresAt && new Date() < tokenExpiresAt) {
+    return cachedToken;
+  }
+
   const response = await axios.post(
     "https://test.api.amadeus.com/v1/security/oauth2/token",
     new URLSearchParams({
@@ -28,10 +35,13 @@ const getAmadeusToken = async () => {
     }
   );
 
-  return response.data.access_token;
+  cachedToken = response.data.access_token;
+  tokenExpiresAt = new Date(Date.now() + 29 * 60 * 1000); // Cache for 29 mins
+
+  return cachedToken;
 };
 
-// === /api/locations endpoint with pagination support ===
+// === /api/locations endpoint with pagination + Israel filter ===
 app.get("/api/locations", async (req, res) => {
   const keyword = req.query.q || "a";
   try {
@@ -55,7 +65,7 @@ app.get("/api/locations", async (req, res) => {
       const results = response.data.data;
       allResults.push(...results);
 
-      // Check if there is a next page
+      // Check if there's another page
       const nextLink = response.data.meta?.links?.next;
       hasMore = !!nextLink;
       offset += limit;
@@ -68,7 +78,6 @@ app.get("/api/locations", async (req, res) => {
         !["Tel Aviv", "Jerusalem", "Eilat", "Haifa"].includes(city.name)
     );
 
-    // Format final response
     const formatted = filtered.map((city) => ({
       name: city.name,
       country: city.address?.countryCode || "",
@@ -84,6 +93,6 @@ app.get("/api/locations", async (req, res) => {
 
 // === Start Server ===
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () =>
-  console.log(`🚀 Proxy server running on port ${PORT}`)
-);
+app.listen(PORT, () => {
+  console.log(`🚀 Proxy server running on port ${PORT}`);
+});
