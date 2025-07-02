@@ -1,4 +1,4 @@
-""import React, { useState, useEffect, useContext, useCallback } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import Select from "react-select";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -23,7 +23,7 @@ function HotelSearch() {
       const trimmed = searchTerm.trim();
       if (trimmed.length < 2) return;
       try {
-        const res = await axios.get(`https://travelhub-gotz.onrender.com/api/locations?q=${encodeURIComponent(trimmed)}`);
+        const res = await axios.get(`https://travelhub-1.onrender.com/api/locations?q=${encodeURIComponent(trimmed)}`);
         const formatted = res.data.map(city => ({
           value: city.iataCode,
           label: `${city.name}, ${city.country}`
@@ -58,7 +58,7 @@ function HotelSearch() {
         rooms
       };
 
-      const res = await axios.post("https://travelhub-gotz.onrender.com/api/hotel-search", payload);
+      const res = await axios.post("https://travelhub-1.onrender.com/api/hotel-search", payload);
       setResults(res.data.data || []);
     } catch (err) {
       console.error("Hotel search failed:", err.message);
