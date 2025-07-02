@@ -23,12 +23,12 @@ if (!LOCATION_CLIENT_ID || !FLIGHT_OFFER_CLIENT_ID || !HOTEL_CLIENT_ID || !CAR_C
   throw new Error("One or more required Amadeus API credentials are missing in environment variables.");
 }
 
-let cachedToken = null;
-let tokenExpiresAt = null;
+const tokenCache = {};
 
 const getAmadeusToken = async (clientId, clientSecret) => {
-  if (cachedToken && tokenExpiresAt && new Date() < tokenExpiresAt) {
-    return cachedToken;
+  const now = new Date();
+  if (tokenCache[clientId] && tokenCache[clientId].expiresAt > now) {
+    return tokenCache[clientId].token;
   }
 
   const response = await axios.post(
@@ -43,29 +43,26 @@ const getAmadeusToken = async (clientId, clientSecret) => {
     }
   );
 
-  cachedToken = response.data.access_token;
-  tokenExpiresAt = new Date(Date.now() + 28 * 60 * 1000);
-  return cachedToken;
+  const newToken = response.data.access_token;
+  const expiresAt = new Date(Date.now() + 28 * 60 * 1000);
+
+  tokenCache[clientId] = { token: newToken, expiresAt };
+  return newToken;
 };
 
 app.get("/api/locations", async (req, res) => {
   const keyword = (req.query.q || "").trim();
-
-  if (keyword.length < 2) {
-    return res.json([]);
-  }
+  if (keyword.length < 2) return res.json([]);
 
   try {
     const token = await getAmadeusToken(LOCATION_CLIENT_ID, LOCATION_CLIENT_SECRET);
     let allResults = [];
-
     let nextUrl = `https://test.api.amadeus.com/v1/reference-data/locations?keyword=${encodeURIComponent(keyword)}&subType=CITY,AIRPORT`;
 
     while (nextUrl) {
       const response = await axios.get(nextUrl, {
         headers: { Authorization: `Bearer ${token}` }
       });
-
       allResults.push(...response.data.data);
       nextUrl = response.data.meta?.links?.next || null;
     }
@@ -91,14 +88,12 @@ app.get("/api/locations", async (req, res) => {
 
 app.post("/api/flight-search", async (req, res) => {
   const { origin, destination, departureDate, returnDate, adults } = req.body;
-
   if (!origin || !destination || !departureDate || !adults) {
     return res.status(400).json({ error: "Missing required flight search parameters." });
   }
 
   try {
     const token = await getAmadeusToken(FLIGHT_OFFER_CLIENT_ID, FLIGHT_OFFER_CLIENT_SECRET);
-
     const searchPayload = {
       currencyCode: "USD",
       originLocationCode: origin,
@@ -130,14 +125,12 @@ app.post("/api/flight-search", async (req, res) => {
 
 app.post("/api/hotel-search", async (req, res) => {
   const { cityCode, checkInDate, checkOutDate, adults, rooms } = req.body;
-
   if (!cityCode || !checkInDate || !checkOutDate || !adults || !rooms) {
     return res.status(400).json({ error: "Missing hotel search parameters." });
   }
 
   try {
     const token = await getAmadeusToken(HOTEL_CLIENT_ID, HOTEL_CLIENT_SECRET);
-
     const response = await axios.get("https://test.api.amadeus.com/v2/shopping/hotel-offers", {
       headers: { Authorization: `Bearer ${token}` },
       params: {
@@ -158,14 +151,12 @@ app.post("/api/hotel-search", async (req, res) => {
 
 app.post("/api/car-rentals", async (req, res) => {
   const { locationCode, pickupDate, returnDate, driverAge } = req.body;
-
   if (!locationCode || !pickupDate || !returnDate || !driverAge) {
     return res.status(400).json({ error: "Missing car rental search parameters." });
   }
 
   try {
     const token = await getAmadeusToken(CAR_CLIENT_ID, CAR_CLIENT_SECRET);
-
     const response = await axios.get("https://test.api.amadeus.com/v1/shopping/availability/car-rental-offers", {
       headers: { Authorization: `Bearer ${token}` },
       params: {
