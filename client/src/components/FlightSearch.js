@@ -1,3 +1,5 @@
+// File: client/src/components/FlightSearch.js
+
 import React, { useState, useContext, useEffect } from "react";
 import Select from "react-select";
 import DatePicker from "react-datepicker";
@@ -24,13 +26,14 @@ function FlightSearch() {
   const navigate = useNavigate();
 
   const fetchCities = async (query, setOptions) => {
-    if (query.length < 2) {
+    const trimmedQuery = query.trim();
+    if (trimmedQuery.length < 2) {
       setOptions([]);
       return;
     }
 
     try {
-      const res = await axios.get(`https://travelhub-1.onrender.com/api/locations?q=${query}`);
+      const res = await axios.get(`https://travelhub-1.onrender.com/api/locations?q=${encodeURIComponent(trimmedQuery)}`);
       const formatted = res.data.map(city => ({
         value: city.iataCode,
         label: `${city.name}, ${city.country}`
@@ -50,22 +53,27 @@ function FlightSearch() {
     fetchCities(toInput, setToOptions);
   }, [toInput]);
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     if (!from || !to || !departure || (tripType === "round-trip" && !returnDate)) {
       alert("Please complete all fields.");
       return;
     }
 
-    setResults([
-      {
-        flightNumber: "SKY789",
-        departure: from.label,
-        arrival: to.label,
-        date: departure.toDateString(),
-        return: tripType === "round-trip" ? returnDate.toDateString() : null,
-        price: "$480"
-      }
-    ]);
+    try {
+      const payload = {
+        origin: from.value,
+        destination: to.value,
+        departureDate: departure.toISOString().split('T')[0],
+        returnDate: tripType === "round-trip" ? returnDate.toISOString().split('T')[0] : undefined,
+        adults
+      };
+
+      const res = await axios.post("https://travelhub-1.onrender.com/api/flight-search", payload);
+      setResults(res.data.data || []);
+    } catch (err) {
+      console.error("Flight search failed:", err.message);
+      alert("Failed to fetch flight results. Please try again.");
+    }
   };
 
   return (
@@ -150,12 +158,10 @@ function FlightSearch() {
         <div className="results-section">
           {results.map((flight, i) => (
             <div className="result-card" key={i}>
-              <h4>{flight.flightNumber}</h4>
-              <p>{flight.departure} → {flight.arrival}</p>
-              <p>{flight.date}</p>
-              {tripType === "round-trip" && <p>Return: {flight.return}</p>}
-              <p className="price">{flight.price}</p>
-              <button onClick={() => addBooking({ type: "flight", ...flight })}>
+              <h4>{flight.validatingAirlineCodes?.[0]}</h4>
+              <p>{flight.itineraries?.[0]?.segments[0]?.departure?.iataCode} → {flight.itineraries?.[0]?.segments.at(-1)?.arrival?.iataCode}</p>
+              <p>Price: {flight.price?.total} {flight.price?.currency}</p>
+              <button onClick={() => addBooking({ type: "flight", flight })}>
                 Add to Itinerary
               </button>
             </div>
