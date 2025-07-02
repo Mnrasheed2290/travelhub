@@ -1,5 +1,4 @@
-// File: client/src/components/FlightSearch.js
-
+// Corrected: client/src/components/FlightSearch.js
 import React, { useState, useContext, useEffect } from "react";
 import Select from "react-select";
 import DatePicker from "react-datepicker";
@@ -26,13 +25,9 @@ function FlightSearch() {
   const navigate = useNavigate();
 
   const fetchCities = async (query, setOptions) => {
-    if (query.length < 2) {
-      setOptions([]);
-      return;
-    }
-
+    if (query.length < 2) return;
     try {
-      const res = await axios.get(`https://travelhub-1.onrender.com/api/locations?q=${encodeURIComponent(query)}`);
+      const res = await axios.get(`/api/locations?q=${query}`);
       const formatted = res.data.map(city => ({
         value: city.iataCode,
         label: `${city.name}, ${city.country}`
@@ -40,17 +35,11 @@ function FlightSearch() {
       setOptions(formatted);
     } catch (err) {
       console.error("City fetch failed:", err.message);
-      setOptions([]);
     }
   };
 
-  useEffect(() => {
-    fetchCities(fromInput, setFromOptions);
-  }, [fromInput]);
-
-  useEffect(() => {
-    fetchCities(toInput, setToOptions);
-  }, [toInput]);
+  useEffect(() => { fetchCities(fromInput, setFromOptions); }, [fromInput]);
+  useEffect(() => { fetchCities(toInput, setToOptions); }, [toInput]);
 
   const handleSearch = async () => {
     if (!from || !to || !departure || (tripType === "round-trip" && !returnDate)) {
@@ -59,71 +48,39 @@ function FlightSearch() {
     }
 
     try {
-      const payload = {
+      const res = await axios.post("/api/flight-search", {
         origin: from.value,
         destination: to.value,
         departureDate: departure.toISOString().split("T")[0],
-        returnDate: tripType === "round-trip" ? returnDate.toISOString().split("T")[0] : null,
+        returnDate: tripType === "round-trip" ? returnDate.toISOString().split("T")[0] : undefined,
         adults
-      };
-
-      const res = await axios.post("https://travelhub-1.onrender.com/api/flight-search", payload);
+      });
       setResults(res.data.data || []);
     } catch (err) {
       console.error("Flight search failed:", err.message);
-      alert("Failed to fetch flight results. Please try again.");
+      alert("Flight search failed. Check console for details.");
     }
   };
 
   return (
     <div className="flight-search-container">
       <h2>Search Flights</h2>
-
       <div className="trip-toggle">
         <label>
-          <input
-            type="radio"
-            name="tripType"
-            value="round-trip"
-            checked={tripType === "round-trip"}
-            onChange={() => setTripType("round-trip")}
-          />
-          Round-trip
+          <input type="radio" value="round-trip" checked={tripType === "round-trip"} onChange={() => setTripType("round-trip")} /> Round-trip
         </label>
         <label>
-          <input
-            type="radio"
-            name="tripType"
-            value="one-way"
-            checked={tripType === "one-way"}
-            onChange={() => setTripType("one-way")}
-          />
-          One-way
+          <input type="radio" value="one-way" checked={tripType === "one-way"} onChange={() => setTripType("one-way")} /> One-way
         </label>
       </div>
 
       <div className="form-group">
         <label>From</label>
-        <Select
-          options={fromOptions}
-          value={from}
-          onChange={setFrom}
-          onInputChange={setFromInput}
-          isSearchable
-          placeholder="Type departure city..."
-        />
+        <Select options={fromOptions} value={from} onChange={setFrom} onInputChange={setFromInput} placeholder="Type departure city..." />
       </div>
-
       <div className="form-group">
         <label>To</label>
-        <Select
-          options={toOptions}
-          value={to}
-          onChange={setTo}
-          onInputChange={setToInput}
-          isSearchable
-          placeholder="Type destination city..."
-        />
+        <Select options={toOptions} value={to} onChange={setTo} onInputChange={setToInput} placeholder="Type destination city..." />
       </div>
 
       <div className="date-row">
@@ -141,28 +98,21 @@ function FlightSearch() {
 
       <div className="form-group">
         <label>Passengers</label>
-        <input
-          type="number"
-          min={1}
-          value={adults}
-          onChange={(e) => setAdults(Number(e.target.value))}
-        />
+        <input type="number" min={1} value={adults} onChange={(e) => setAdults(Number(e.target.value))} />
       </div>
 
-      <button className="search-btn" onClick={handleSearch}>
-        Find Flights
-      </button>
+      <button className="search-btn" onClick={handleSearch}>Find Flights</button>
 
       {results.length > 0 && (
         <div className="results-section">
           {results.map((flight, i) => (
             <div className="result-card" key={i}>
-              <h4>Flight {flight.id}</h4>
-              <p>{flight.itineraries?.[0]?.segments?.[0]?.departure?.iataCode} → {flight.itineraries?.[0]?.segments?.[0]?.arrival?.iataCode}</p>
-              <p>{flight.price?.total} {flight.price?.currency}</p>
-              <button onClick={() => addBooking({ type: "flight", ...flight })}>
-                Add to Itinerary
-              </button>
+              <h4>{flight.itineraries?.[0]?.segments[0]?.carrierCode} {flight.itineraries?.[0]?.segments[0]?.number}</h4>
+              <p>{from.label} → {to.label}</p>
+              <p>{departure.toDateString()}</p>
+              {tripType === "round-trip" && <p>Return: {returnDate.toDateString()}</p>}
+              <p className="price">${flight.price?.total} {flight.price?.currency}</p>
+              <button onClick={() => addBooking({ type: "flight", ...flight })}>Add to Itinerary</button>
             </div>
           ))}
         </div>
