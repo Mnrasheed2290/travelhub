@@ -20,12 +20,12 @@ function HotelSearch() {
   const { addBooking } = useContext(BookingContext);
   const navigate = useNavigate();
 
-  // Fetch city suggestions as the user types
   useEffect(() => {
     const fetchCities = async () => {
-      if (searchTerm.length < 2) return;
+      const trimmed = searchTerm.trim();
+      if (trimmed.length < 2) return;
       try {
-        const res = await axios.get(`https://travelhub-1.onrender.com/api/locations?q=${searchTerm}`);
+        const res = await axios.get(`https://travelhub-1.onrender.com/api/locations?q=${encodeURIComponent(trimmed)}`);
         const formatted = res.data.map(city => ({
           value: city.iataCode,
           label: `${city.name}, ${city.country}`
@@ -45,23 +45,27 @@ function HotelSearch() {
     }
   }, []);
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     if (!city || !checkIn || !checkOut) {
       alert("Please fill all fields");
       return;
     }
 
-    setResults([
-      {
-        hotelName: "SkyNest Royal Suites",
-        city: city.label,
-        checkIn,
-        checkOut,
-        price: "$620",
+    try {
+      const payload = {
+        cityCode: city.value,
+        checkInDate: checkIn,
+        checkOutDate: checkOut,
         adults,
         rooms
-      }
-    ]);
+      };
+
+      const res = await axios.post("https://travelhub-1.onrender.com/api/hotel-search", payload);
+      setResults(res.data.data || []);
+    } catch (err) {
+      console.error("Hotel search failed:", err.message);
+      alert("Failed to fetch hotel results. Please try again.");
+    }
   };
 
   return (
@@ -106,11 +110,11 @@ function HotelSearch() {
         <div className="results-section">
           {results.map((hotel, i) => (
             <div className="result-card" key={i}>
-              <h4>{hotel.hotelName}</h4>
-              <p>{hotel.city}</p>
-              <p>{hotel.checkIn} → {hotel.checkOut}</p>
-              <p>{hotel.rooms} room(s), {hotel.adults} guest(s)</p>
-              <p className="price">{hotel.price}</p>
+              <h4>{hotel.hotel?.name}</h4>
+              <p>{hotel.hotel?.address?.cityName}</p>
+              <p>{checkIn} → {checkOut}</p>
+              <p>{rooms} room(s), {adults} guest(s)</p>
+              <p className="price">{hotel.offers?.[0]?.price?.total} {hotel.offers?.[0]?.price?.currency}</p>
               <button onClick={() => addBooking({ type: "hotel", ...hotel })}>
                 Add to Itinerary
               </button>
