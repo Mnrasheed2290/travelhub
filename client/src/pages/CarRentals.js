@@ -15,15 +15,14 @@ const CarRental = () => {
   const [driverAge, setDriverAge] = useState(25);
   const [cityOptions, setCityOptions] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [locations, setLocations] = useState([]);
+  const [results, setResults] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCities = async () => {
-      const trimmed = searchTerm.trim();
-      if (trimmed.length < 2) return;
+      if (searchTerm.length < 2) return;
       try {
-        const res = await axios.get(`https://travelhub-1.onrender.com/api/locations?q=${encodeURIComponent(trimmed)}`);
+        const res = await axios.get(`https://travelhub-1.onrender.com/api/locations?q=${encodeURIComponent(searchTerm)}`);
         const formatted = res.data.map(city => ({
           value: city.iataCode,
           label: `${city.name}, ${city.country}`
@@ -58,18 +57,18 @@ const CarRental = () => {
       };
 
       const res = await axios.post("https://travelhub-1.onrender.com/api/car-rentals", payload);
-      setLocations(res.data.data || []);
+      setResults(res.data.data || []);
     } catch (err) {
       console.error("Car rental search failed:", err.message);
-      alert("Failed to fetch car rentals. Please try again.");
+      alert("Failed to fetch car rental results. Please try again.");
     }
   };
 
-  const handleBook = (loc) => {
+  const handleBook = (car) => {
     navigate("/confirmation", {
       state: {
         bookingDetails: {
-          rentalLocation: loc.name,
+          rentalLocation: city.label,
           city: city.label,
           pickup: pickupDate.toDateString(),
           return: returnDate.toDateString(),
@@ -118,14 +117,15 @@ const CarRental = () => {
 
       <button className="search-btn" onClick={handleSearch}>Search Cars</button>
 
-      {locations.length > 0 && (
+      {results.length > 0 && (
         <div className="results-section">
           <h3>Available Cars</h3>
           <ul>
-            {locations.map((loc, index) => (
+            {results.map((car, index) => (
               <li key={index}>
-                <strong>{loc.vehicle?.make} {loc.vehicle?.model}</strong> — {loc.estimatedTotal?.amount} {loc.estimatedTotal?.currency}
-                <button className="book-btn" onClick={() => handleBook(loc)}>Book This Car</button>
+                <strong>{car.vehicle?.name || "Car Option"}</strong>
+                <p>{car.estimatedTotal?.amount} {car.estimatedTotal?.currency}</p>
+                <button className="book-btn" onClick={() => handleBook(car)}>Book This Car</button>
               </li>
             ))}
           </ul>
