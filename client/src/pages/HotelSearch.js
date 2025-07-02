@@ -1,6 +1,6 @@
 // File: client/src/pages/HotelSearch.js
 
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import Select from "react-select";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -15,14 +15,17 @@ function HotelSearch() {
   const [rooms, setRooms] = useState(1);
   const [options, setOptions] = useState([]);
   const [results, setResults] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const { addBooking } = useContext(BookingContext);
   const navigate = useNavigate();
 
+  // Fetch city suggestions as the user types
   useEffect(() => {
     const fetchCities = async () => {
+      if (searchTerm.length < 2) return;
       try {
-        const res = await axios.get("https://travelhub-1.onrender.com/api/locations?q=a");
+        const res = await axios.get(`https://travelhub-1.onrender.com/api/locations?q=${searchTerm}`);
         const formatted = res.data.map(city => ({
           value: city.iataCode,
           label: `${city.name}, ${city.country}`
@@ -30,10 +33,16 @@ function HotelSearch() {
         setOptions(formatted);
       } catch (err) {
         console.error("Hotel city fetch failed:", err.message);
-        alert("Error loading cities.");
+        setOptions([]);
       }
     };
     fetchCities();
+  }, [searchTerm]);
+
+  const handleInputChange = useCallback((inputValue, { action }) => {
+    if (action === "input-change") {
+      setSearchTerm(inputValue);
+    }
   }, []);
 
   const handleSearch = () => {
@@ -58,26 +67,39 @@ function HotelSearch() {
   return (
     <div className="hotel-search-container">
       <h2>Luxury Hotel Search</h2>
+
       <div className="form-group">
         <label>Destination city</label>
-        <Select options={options} value={city} onChange={setCity} isSearchable />
+        <Select
+          options={options}
+          value={city}
+          onChange={setCity}
+          onInputChange={handleInputChange}
+          isSearchable
+          placeholder="Type to search..."
+        />
       </div>
+
       <div className="form-group">
         <label>Check-In Date</label>
         <input type="date" value={checkIn} onChange={(e) => setCheckIn(e.target.value)} />
       </div>
+
       <div className="form-group">
         <label>Check-Out Date</label>
         <input type="date" value={checkOut} onChange={(e) => setCheckOut(e.target.value)} />
       </div>
+
       <div className="form-group">
         <label>Guests</label>
         <input type="number" min={1} value={adults} onChange={(e) => setAdults(Number(e.target.value))} />
       </div>
+
       <div className="form-group">
         <label>Rooms</label>
         <input type="number" min={1} value={rooms} onChange={(e) => setRooms(Number(e.target.value))} />
       </div>
+
       <button className="search-btn" onClick={handleSearch}>Search Hotels</button>
 
       {results.length > 0 && (
