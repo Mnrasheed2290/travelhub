@@ -1,5 +1,3 @@
-// File: client/src/pages/HotelSearch.js
-
 import React, { useState, useEffect, useContext, useCallback } from "react";
 import Select from "react-select";
 import axios from "axios";
@@ -63,8 +61,8 @@ function HotelSearch() {
       const res = await axios.post("https://travelhub-1.onrender.com/api/hotel-search", payload);
       setResults(res.data.data || []);
     } catch (err) {
-      console.error("Hotel search failed:", err.message);
-      alert("Failed to fetch hotel results. Please try again.");
+      console.error("Hotel search failed:", err.response?.data || err.message);
+      alert(`Error: ${err.response?.data?.errors?.[0]?.detail || "Failed to fetch hotel results. Please try again."}`);
     }
   };
 
