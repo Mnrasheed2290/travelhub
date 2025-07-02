@@ -1,5 +1,3 @@
-// File: client/src/components/FlightSearch.js
-
 import React, { useState, useContext, useEffect } from "react";
 import Select from "react-select";
 import DatePicker from "react-datepicker";
@@ -25,47 +23,30 @@ function FlightSearch() {
   const { addBooking } = useContext(BookingContext);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchCities = async (query, setOptions) => {
-      if (query.length < 2) {
-        setOptions([]);
-        return;
-      }
-      try {
-        const res = await axios.get(`https://travelhub-1.onrender.com/api/locations?q=${query}`);
-        const formatted = res.data.map(city => ({
-          value: city.iataCode,
-          label: `${city.name}, ${city.country}`
-        }));
-        setOptions(formatted);
-      } catch (err) {
-        console.error("City fetch failed:", err.message);
-        setOptions([]);
-      }
-    };
+  const fetchCities = async (query, setOptions) => {
+    if (query.length < 2) {
+      setOptions([]);
+      return;
+    }
 
+    try {
+      const res = await axios.get(`https://travelhub-1.onrender.com/api/locations?q=${query}`);
+      const formatted = res.data.map(city => ({
+        value: city.iataCode,
+        label: `${city.name}, ${city.country}`
+      }));
+      setOptions(formatted);
+    } catch (err) {
+      console.error("City fetch failed:", err.message);
+      setOptions([]);
+    }
+  };
+
+  useEffect(() => {
     fetchCities(fromInput, setFromOptions);
   }, [fromInput]);
 
   useEffect(() => {
-    const fetchCities = async (query, setOptions) => {
-      if (query.length < 2) {
-        setOptions([]);
-        return;
-      }
-      try {
-        const res = await axios.get(`https://travelhub-1.onrender.com/api/locations?q=${query}`);
-        const formatted = res.data.map(city => ({
-          value: city.iataCode,
-          label: `${city.name}, ${city.country}`
-        }));
-        setOptions(formatted);
-      } catch (err) {
-        console.error("City fetch failed:", err.message);
-        setOptions([]);
-      }
-    };
-
     fetchCities(toInput, setToOptions);
   }, [toInput]);
 
@@ -120,7 +101,7 @@ function FlightSearch() {
           options={fromOptions}
           value={from}
           onChange={setFrom}
-          onInputChange={(value) => setFromInput(value)}
+          onInputChange={setFromInput}
           isSearchable
           placeholder="Type departure city..."
         />
@@ -132,7 +113,7 @@ function FlightSearch() {
           options={toOptions}
           value={to}
           onChange={setTo}
-          onInputChange={(value) => setToInput(value)}
+          onInputChange={setToInput}
           isSearchable
           placeholder="Type destination city..."
         />
