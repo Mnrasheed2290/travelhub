@@ -10,7 +10,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// === Load Amadeus Flight API Credentials ===
 const AMADEUS_CLIENT_ID = process.env.flightAMADEUS_API_KEY;
 const AMADEUS_CLIENT_SECRET = process.env.flightAMADEUS_API_SECRET;
 
@@ -18,7 +17,6 @@ if (!AMADEUS_CLIENT_ID || !AMADEUS_CLIENT_SECRET) {
   throw new Error("Amadeus API credentials are missing in environment variables.");
 }
 
-// === Token Caching Logic ===
 let cachedToken = null;
 let tokenExpiresAt = null;
 
@@ -40,12 +38,11 @@ const getAmadeusToken = async () => {
   );
 
   cachedToken = response.data.access_token;
-  tokenExpiresAt = new Date(Date.now() + 28 * 60 * 1000); // 28 min expiry
+  tokenExpiresAt = new Date(Date.now() + 28 * 60 * 1000);
 
   return cachedToken;
 };
 
-// === /api/locations endpoint ===
 app.get("/api/locations", async (req, res) => {
   const keyword = (req.query.q || "").trim();
 
@@ -87,7 +84,6 @@ app.get("/api/locations", async (req, res) => {
   }
 });
 
-// === /api/flight-search for real-time offers ===
 app.post("/api/flight-search", async (req, res) => {
   const { origin, destination, departureDate, returnDate, adults } = req.body;
 
@@ -121,11 +117,12 @@ app.post("/api/flight-search", async (req, res) => {
     res.json(response.data);
   } catch (error) {
     console.error("❌ Flight search error:", error.response?.data || error.message);
-    res.status(500).json({ error: "Failed to fetch flight offers" });
+    res.status(error.response?.status || 500).json({
+      error: error.response?.data || error.message
+    });
   }
 });
 
-// === Start Server ===
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Proxy server running on port ${PORT}`);
