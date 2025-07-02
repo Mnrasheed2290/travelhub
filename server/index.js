@@ -10,9 +10,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// === Load Amadeus Credentials from Environment ===
-const AMADEUS_CLIENT_ID = process.env.AMADEUS_API_KEY;
-const AMADEUS_CLIENT_SECRET = process.env.AMADEUS_API_SECRET;
+// === Load Amadeus Flight Location Credentials ===
+const AMADEUS_CLIENT_ID = process.env.flightAMADEUS_API_KEY;
+const AMADEUS_CLIENT_SECRET = process.env.flightAMADEUS_API_SECRET;
 
 // === Token Caching Logic ===
 let cachedToken = null;
@@ -36,17 +36,17 @@ const getAmadeusToken = async () => {
   );
 
   cachedToken = response.data.access_token;
-  tokenExpiresAt = new Date(Date.now() + 29 * 60 * 1000); // Expires in 29 minutes
+  tokenExpiresAt = new Date(Date.now() + 29 * 60 * 1000); // 29 min expiry
 
   return cachedToken;
 };
 
-// === /api/locations endpoint with pagination & filtering ===
+// === /api/locations endpoint with keyword search and filtering ===
 app.get("/api/locations", async (req, res) => {
   const keyword = req.query.q || "";
 
   if (keyword.length < 2) {
-    return res.json([]); // Return nothing for short inputs
+    return res.json([]); // Prevent unnecessary queries
   }
 
   try {
@@ -64,7 +64,7 @@ app.get("/api/locations", async (req, res) => {
       nextUrl = response.data.meta?.links?.next || null;
     }
 
-    // Exclude Israeli cities
+    // Exclude cities in Israel
     const filtered = allResults.filter(
       (city) =>
         city.address?.countryCode !== "IL" &&
@@ -84,7 +84,7 @@ app.get("/api/locations", async (req, res) => {
   }
 });
 
-// === Start the Server ===
+// === Start Server ===
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Proxy server running on port ${PORT}`);
