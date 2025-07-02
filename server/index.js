@@ -14,6 +14,10 @@ app.use(express.json());
 const AMADEUS_CLIENT_ID = process.env.flightAMADEUS_API_KEY;
 const AMADEUS_CLIENT_SECRET = process.env.flightAMADEUS_API_SECRET;
 
+if (!AMADEUS_CLIENT_ID || !AMADEUS_CLIENT_SECRET) {
+  throw new Error("Amadeus API credentials are missing in environment variables.");
+}
+
 // === Token Caching Logic ===
 let cachedToken = null;
 let tokenExpiresAt = null;
@@ -36,14 +40,14 @@ const getAmadeusToken = async () => {
   );
 
   cachedToken = response.data.access_token;
-  tokenExpiresAt = new Date(Date.now() + 29 * 60 * 1000); // 29 min expiry
+  tokenExpiresAt = new Date(Date.now() + 28 * 60 * 1000); // 28 min expiry
 
   return cachedToken;
 };
 
 // === /api/locations endpoint with keyword search and filtering ===
 app.get("/api/locations", async (req, res) => {
-  const keyword = req.query.q || "";
+  const keyword = (req.query.q || "").trim();
 
   if (keyword.length < 2) {
     return res.json([]); // Prevent unnecessary queries
