@@ -10,7 +10,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// === Amadeus API Credentials ===
+// === API Credentials ===
 const CREDENTIALS = {
   location: {
     id: process.env.flightAMADEUS_API_KEY,
@@ -38,6 +38,7 @@ const getAmadeusToken = async (type) => {
   if (cache && cache.token && new Date() < cache.expiry) return cache.token;
 
   const { id, secret } = CREDENTIALS[type];
+
   const response = await axios.post(
     "https://test.api.amadeus.com/v1/security/oauth2/token",
     new URLSearchParams({
@@ -66,21 +67,23 @@ app.get("/api/locations", async (req, res) => {
 
   try {
     const token = await getAmadeusToken("location");
-    const response = await axios.get(
-      `https://test.api.amadeus.com/v1/reference-data/locations?keyword=${encodeURIComponent(keyword)}&subType=CITY,AIRPORT`,
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
+    const url = `https://test.api.amadeus.com/v1/reference-data/locations?keyword=${encodeURIComponent(keyword)}&subType=CITY,AIRPORT`;
+
+    const response = await axios.get(url, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
 
     const results = response.data.data.filter(
-      (c) => c.address?.countryCode !== "IL" &&
-        !["Tel Aviv", "Jerusalem", "Eilat", "Haifa"].includes(c.name)
+      (c) => c.address?.countryCode !== "IL" && !["Tel Aviv", "Jerusalem", "Eilat", "Haifa"].includes(c.name)
     );
 
-    res.json(results.map((c) => ({
-      name: c.name,
-      country: c.address?.countryCode,
-      iataCode: c.iataCode
-    })));
+    res.json(
+      results.map((c) => ({
+        name: c.name,
+        country: c.address?.countryCode,
+        iataCode: c.iataCode
+      }))
+    );
   } catch (err) {
     console.error("❌ Location fetch error:", err.response?.data || err.message);
     res.status(500).json({ error: "Failed to fetch locations" });
@@ -96,7 +99,8 @@ app.post("/api/flight-search", async (req, res) => {
 
   try {
     const token = await getAmadeusToken("flight");
-    const payload = {
+
+    const searchPayload = {
       currencyCode: "USD",
       originLocationCode: origin,
       destinationLocationCode: destination,
@@ -107,7 +111,7 @@ app.post("/api/flight-search", async (req, res) => {
 
     const response = await axios.post(
       "https://test.api.amadeus.com/v2/shopping/flight-offers",
-      payload,
+      searchPayload,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -117,9 +121,11 @@ app.post("/api/flight-search", async (req, res) => {
     );
 
     res.json(response.data);
-  } catch (err) {
-    console.error("❌ Flight search error:", err.response?.data || err.message);
-    res.status(err.response?.status || 500).json({ error: err.response?.data || err.message });
+  } catch (error) {
+    console.error("❌ Flight search error:", error.response?.data || error.message);
+    res.status(error.response?.status || 500).json({
+      error: error.response?.data || error.message
+    });
   }
 });
 
@@ -132,6 +138,7 @@ app.post("/api/hotel-search", async (req, res) => {
 
   try {
     const token = await getAmadeusToken("hotel");
+
     const response = await axios.get("https://test.api.amadeus.com/v2/shopping/hotel-offers", {
       headers: { Authorization: `Bearer ${token}` },
       params: {
@@ -144,9 +151,9 @@ app.post("/api/hotel-search", async (req, res) => {
     });
 
     res.json(response.data);
-  } catch (err) {
-    console.error("❌ Hotel search error:", err.response?.data || err.message);
-    res.status(err.response?.status || 500).json({ error: err.response?.data || err.message });
+  } catch (error) {
+    console.error("❌ Hotel search error:", error.response?.data || error.message);
+    res.status(error.response?.status || 500).json({ error: error.response?.data || error.message });
   }
 });
 
@@ -159,6 +166,7 @@ app.post("/api/car-rentals", async (req, res) => {
 
   try {
     const token = await getAmadeusToken("car");
+
     const response = await axios.get("https://test.api.amadeus.com/v1/shopping/availability/car-rental-offers", {
       headers: { Authorization: `Bearer ${token}` },
       params: {
@@ -171,12 +179,14 @@ app.post("/api/car-rentals", async (req, res) => {
     });
 
     res.json(response.data);
-  } catch (err) {
-    console.error("❌ Car rental search error:", err.response?.data || err.message);
-    res.status(err.response?.status || 500).json({ error: err.response?.data || err.message });
+  } catch (error) {
+    console.error("❌ Car rental search error:", error.response?.data || error.message);
+    res.status(error.response?.status || 500).json({ error: error.response?.data || error.message });
   }
 });
 
-// === Start Server ===
+// === Server Start ===
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`🚀 Proxy server running on port ${PORT}`);
+});
