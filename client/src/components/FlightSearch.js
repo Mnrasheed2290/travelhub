@@ -30,7 +30,6 @@ function FlightSearch() {
     }
 
     try {
-      // Try relative path first, fallback to full URL if needed
       const res = await axios.get(`/api/locations?q=${encodeURIComponent(query)}`);
       const formatted = res.data.map(city => ({
         value: city.iataCode,
@@ -75,70 +74,70 @@ function FlightSearch() {
   return (
     <div className="flight-search-container">
       <h2>Search Flights</h2>
-      
+
       <div className="trip-toggle">
         <label>
-          <input 
-            type="radio" 
+          <input
+            type="radio"
             name="tripType"
-            value="round-trip" 
-            checked={tripType === "round-trip"} 
-            onChange={() => setTripType("round-trip")} 
-          /> 
+            value="round-trip"
+            checked={tripType === "round-trip"}
+            onChange={() => setTripType("round-trip")}
+          />
           Round-trip
         </label>
         <label>
-          <input 
-            type="radio" 
+          <input
+            type="radio"
             name="tripType"
-            value="one-way" 
-            checked={tripType === "one-way"} 
-            onChange={() => setTripType("one-way")} 
-          /> 
+            value="one-way"
+            checked={tripType === "one-way"}
+            onChange={() => setTripType("one-way")}
+          />
           One-way
         </label>
       </div>
 
       <div className="form-group">
         <label>From</label>
-        <Select 
-          options={fromOptions} 
-          value={from} 
-          onChange={setFrom} 
+        <Select
+          options={fromOptions}
+          value={from}
+          onChange={setFrom}
           onInputChange={setFromInput}
           isSearchable
-          placeholder="Type departure city..." 
+          placeholder="Type departure city..."
         />
       </div>
-      
+
       <div className="form-group">
         <label>To</label>
-        <Select 
-          options={toOptions} 
-          value={to} 
-          onChange={setTo} 
+        <Select
+          options={toOptions}
+          value={to}
+          onChange={setTo}
           onInputChange={setToInput}
           isSearchable
-          placeholder="Type destination city..." 
+          placeholder="Type destination city..."
         />
       </div>
 
       <div className="date-row">
         <div className="form-group">
           <label>Departure</label>
-          <DatePicker 
-            selected={departure} 
-            onChange={setDeparture} 
-            minDate={new Date()} 
+          <DatePicker
+            selected={departure}
+            onChange={setDeparture}
+            minDate={new Date()}
           />
         </div>
         {tripType === "round-trip" && (
           <div className="form-group">
             <label>Return</label>
-            <DatePicker 
-              selected={returnDate} 
-              onChange={setReturnDate} 
-              minDate={departure} 
+            <DatePicker
+              selected={returnDate}
+              onChange={setReturnDate}
+              minDate={departure}
             />
           </div>
         )}
@@ -146,11 +145,11 @@ function FlightSearch() {
 
       <div className="form-group">
         <label>Passengers</label>
-        <input 
-          type="number" 
-          min={1} 
-          value={adults} 
-          onChange={(e) => setAdults(Number(e.target.value))} 
+        <input
+          type="number"
+          min={1}
+          value={adults}
+          onChange={(e) => setAdults(Number(e.target.value))}
         />
       </div>
 
@@ -163,7 +162,7 @@ function FlightSearch() {
           {results.map((flight, i) => (
             <div className="result-card" key={i}>
               <h4>
-                {flight.itineraries?.[0]?.segments[0]?.carrierCode} 
+                {flight.itineraries?.[0]?.segments[0]?.carrierCode}
                 {flight.itineraries?.[0]?.segments[0]?.number}
               </h4>
               <p>{from.label} → {to.label}</p>
