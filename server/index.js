@@ -10,8 +10,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const AMADEUS_CLIENT_ID = process.env.flightAMADEUS_API_KEY;
-const AMADEUS_CLIENT_SECRET = process.env.flightAMADEUS_API_SECRET;
+const AMADEUS_CLIENT_ID = process.env.REACT_APP_FLIGHT_AMADEUS_API_KEY;
+const AMADEUS_CLIENT_SECRET = process.env.REACT_APP_FLIGHT_AMADEUS_API_SECRET;
 
 if (!AMADEUS_CLIENT_ID || !AMADEUS_CLIENT_SECRET) {
   throw new Error("Amadeus API credentials are missing in environment variables.");
